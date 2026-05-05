@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// API key for project authentication
+model ApiKey {
+  id        String    @id @default(uuid())
+  key       String    @unique
+  name      String
+  projectId String    @map("project_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  revokedAt DateTime? @map("revoked_at")
+  project   Project   @relation(fields: [projectId], references: [id])
+
+  @@map("api_keys")
+}
+
+/// Project — top-level container for traces
+model Project {
+  id        String    @id @default(uuid())
+  name      String
+  publicKey String    @map("public_key")
+  createdAt DateTime  @default(now()) @map("created_at")
+  apiKeys   ApiKey[]
+  sessions  Session[]
+
+  @@map("projects")
+}
+
+/// Session — groups traces from a single agent execution session
+model Session {
+  id          String        @id @default(uuid())
+  projectId   String        @map("project_id")
+  name        String?
+  startedAt   DateTime      @default(now()) @map("started_at")
+  endedAt     DateTime?     @map("ended_at")
+  metadata    Json?
+  project     Project       @relation(fields: [projectId], references: [id])
+  records     TraceRecord[]
+  merkleRoots MerkleRoot[]
+
+  @@map("sessions")
+}
+
+/// TraceRecord — append-only, signed, hash-chained audit record
+model TraceRecord {
+  id             String   @id @default(uuid())
+  sessionId      String   @map("session_id")
+  sequenceNumber Int      @map("sequence_number")
+  spanData       Json     @map("span_data")
+  contentHash    String   @map("content_hash")
+  previousHash   String   @map("previous_hash")
+  chainHash      String   @map("chain_hash")
+  signature      String
+  publicKey      String   @map("public_key")
+  createdAt      DateTime @default(now()) @map("created_at")
+  session        Session  @relation(fields: [sessionId], references: [id])
+
+  @@unique([sessionId, sequenceNumber])
+  @@index([sessionId])
+  @@index([chainHash])
+  @@map("trace_records")
+}
+
+/// MerkleRoot — periodic Merkle root anchors
+model MerkleRoot {
+  id            String   @id @default(uuid())
+  sessionId     String   @map("session_id")
+  root          String
+  leafCount     Int      @map("leaf_count")
+  firstSequence Int      @map("first_sequence")
+  lastSequence  Int      @map("last_sequence")
+  createdAt     DateTime @default(now()) @map("created_at")
+  anchoredTo    String?  @map("anchored_to")
+  session       Session  @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+  @@map("merkle_roots")
+}

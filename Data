@@ -1,0 +1,25 @@
+Good report. Here are the most important things that came out of it:
+
+What's confirmed:
+
+Zero of 25+ tools provide cryptographically signed traces. The gap is real and cited in an active IETF draft naming LangSmith, Langfuse, and OpenTelemetry by name.
+
+ISO 27001 A.8.15 and ISO 42001 A.6.2.8 explicitly require what AgentTrace produces - cryptographic hashing, digital signatures, or WORM storage. These are the strongest regulatory hooks.
+
+The "audit log" framing all incumbents use is a deliberate or accidental obfuscation - they log admin actions, not execution traces. That's the sentence judges will remember.
+
+The right category frame: AgentTrace is not a LangSmith replacement. It's what SIEM is to APM - a different buyer, different question, different category. That's a stronger position than "we do what they do but with crypto."
+
+The one real risk: There are at least 7 indie projects already building tamper-evident agent logs (AI Action Ledger, IRL Engine, SpanForge, etc.). If any of them already have production customers in regulated industries, the wedge is narrower than it looks and the differentiation story needs to be against them, not against LangSmith.
+
+Good news and a useful constraint.
+
+Good news: Zero of the eight have customers, funding, or distribution. The category is wide open commercially.
+
+The constraint: Crypto sophistication is not the differentiator. IRL Engine uses Ed25519 + Bitcoin Merkle anchoring. WeilChain uses Ed25519 + a proprietary blockchain. Trace Prompt uses BLAKE3 + GitHub Merkle anchoring. AgentTrace cannot claim "first to sign agent traces" - that's already done.
+
+What none of them have: a compliance-officer-facing experience. They're all developer tools with developer packaging. No evidence-export workflow designed for an auditor. No NL queries over trace history. No dashboard that a CISO can open without reading a README.
+
+That's the real wedge. The crypto is table stakes. The compliance workflow is the product.
+
+This also sharpens the hackathon demo: don't demo the signing. Demo a tampering attempt being detected and then show the ISO 42001 evidence export that a compliance officer would actually hand to an auditor. None of the eight can do that.

@@ -1,0 +1,16 @@
+{
+  "name": "@agenttrace/core",
+  "version": "0.1.0",
+  "description": "Cryptographic engine — Ed25519 signing, SHA-256 hash chains, Merkle trees",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rimraf dist",
+    "lint": "tsc --noEmit"
+  },
+  "license": "MIT"
+}

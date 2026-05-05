@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+coverage/
+*.db
+*.sqlite
+__pycache__/
+*.pyc
+.venv/

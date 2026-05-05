@@ -1,0 +1,21 @@
+{
+  "name": "@agenttrace/cli",
+  "version": "0.1.0",
+  "description": "AgentTrace CLI — verify chains, export compliance reports, manage keys",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "agenttrace": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "clean": "rimraf dist",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agenttrace/core": "workspace:*"
+  },
+  "license": "MIT"
+}
