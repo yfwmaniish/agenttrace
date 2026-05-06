@@ -2,9 +2,10 @@
   "name": "@yfwdecimal/api",
   "version": "0.1.0",
   "description": "Fastify REST API — append-only trace ingestion, verification, compliance export",
+  "type": "module",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run --passWithNoTests",
@@ -15,11 +16,11 @@
     "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
-    "@yfwdecimal/core": "workspace:*",
     "@fastify/cors": "^11.2.0",
     "@fastify/sensible": "^6.0.4",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@yfwdecimal/core": "^0.1.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "pg": "^8.20.0",
@@ -30,6 +31,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/uuid": "^11.0.0",
+    "@vercel/node": "^5.7.15",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0"
   }
