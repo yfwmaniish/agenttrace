@@ -1,36 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api, type SessionSummary, type VerifyResult, type TamperResult } from "@/lib/api";
 
 export default function VerifyPage() {
-  const [sessionId, setSessionId] = useState("sess-a1b2c3d4");
+  const [sessions, setSessions] = useState<SessionSummary[]>([]);
+  const [sessionId, setSessionId] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [result, setResult] = useState<null | {
     valid: boolean; chainLength: number; errors: { type: string; message: string }[];
     merkleRoot: string; verifiedAt: string; duration: string;
   }>(null);
 
-  const runVerification = () => {
+  useEffect(() => {
+    api.getSessions().then(({ sessions: list }) => {
+      setSessions(list);
+      if (list.length > 0) setSessionId(list[0].id);
+    });
+  }, []);
+
+  const runVerification = async () => {
+    if (!sessionId) return;
     setVerifying(true);
     setResult(null);
-    // Simulated verification for demo
-    setTimeout(() => {
-      const isTampered = sessionId.includes("c9d0");
+    const startTime = performance.now();
+
+    try {
+      const [verifyRes, tamperRes] = await Promise.all([
+        api.verify(sessionId),
+        api.findTamperPoint(sessionId),
+      ]);
+
+      const duration = `${Math.round(performance.now() - startTime)}ms`;
+      const errors: { type: string; message: string }[] = [];
+
+      if (!verifyRes.valid && verifyRes.errors) {
+        for (const e of verifyRes.errors) {
+          errors.push({ type: "chain_error", message: e });
+        }
+      }
+      if (tamperRes.tampered && tamperRes.error) {
+        errors.push({ type: "tamper_point", message: `Tamper detected at record #${tamperRes.index}: ${tamperRes.error}` });
+      }
+
       setResult({
-        valid: !isTampered,
-        chainLength: isTampered ? 89 : 342,
-        errors: isTampered
-          ? [
-              { type: "hash_mismatch", message: "Content hash mismatch at record #67 — span data was modified after signing" },
-              { type: "chain_break", message: "Chain break at record #68 — previousHash does not match record #67 chainHash" },
-            ]
-          : [],
-        merkleRoot: "a7f3e2d1c4b5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
+        valid: verifyRes.valid,
+        chainLength: verifyRes.chainLength,
+        errors,
+        merkleRoot: verifyRes.merkleRoot || "N/A",
         verifiedAt: new Date().toISOString(),
-        duration: isTampered ? "234ms" : "187ms",
+        duration,
       });
+    } catch (err) {
+      setResult({
+        valid: false,
+        chainLength: 0,
+        errors: [{ type: "api_error", message: String(err) }],
+        merkleRoot: "N/A",
+        verifiedAt: new Date().toISOString(),
+        duration: "—",
+      });
+    } finally {
       setVerifying(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -48,17 +80,20 @@ export default function VerifyPage() {
           Session ID
         </label>
         <div className="flex gap-3">
-          <input type="text" value={sessionId} onChange={(e) => setSessionId(e.target.value)}
+          <select value={sessionId} onChange={(e) => setSessionId(e.target.value)}
             className="flex-1 px-4 py-3 rounded-lg text-sm font-mono outline-none transition-all duration-200"
             style={{
               background: "var(--color-bg-primary)",
               border: "1px solid var(--color-border)",
               color: "var(--color-text-primary)",
-            }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.5)"; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--color-border)"; }}
-            placeholder="sess-xxxxxxxx" />
-          <button onClick={runVerification} disabled={verifying}
+            }}>
+            {sessions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name || "Unnamed"} — {s.id.slice(0, 16)}... ({s._count.records} records)
+              </option>
+            ))}
+          </select>
+          <button onClick={runVerification} disabled={verifying || !sessionId}
             className="px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2"
             style={{
               background: verifying ? "var(--color-accent-dim)" : "var(--color-accent)",
@@ -80,14 +115,6 @@ export default function VerifyPage() {
               </>
             )}
           </button>
-        </div>
-
-        {/* Quick presets */}
-        <div className="flex gap-2 mt-3">
-          <span className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>Try:</span>
-          <button onClick={() => setSessionId("sess-a1b2c3d4")} className="text-[11px] hover:underline" style={{ color: "var(--color-text-accent)" }}>Valid chain</button>
-          <span style={{ color: "var(--color-text-muted)" }}>•</span>
-          <button onClick={() => setSessionId("sess-c9d0e1f2")} className="text-[11px] hover:underline" style={{ color: "#f87171" }}>Tampered chain</button>
         </div>
       </div>
 

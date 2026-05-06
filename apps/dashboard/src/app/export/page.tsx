@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api, type SessionSummary } from "@/lib/api";
 
 export default function ExportPage() {
   const [standard, setStandard] = useState("ISO_42001");
-  const [sessionId, setSessionId] = useState("sess-a1b2c3d4");
+  const [sessions, setSessions] = useState<SessionSummary[]>([]);
+  const [sessionId, setSessionId] = useState("");
+  const [exporting, setExporting] = useState(false);
   const [exported, setExported] = useState(false);
+
+  useEffect(() => {
+    api.getSessions().then(({ sessions: list }) => {
+      setSessions(list);
+      if (list.length > 0) setSessionId(list[0].id);
+    });
+  }, []);
 
   const standards = [
     { id: "ISO_42001", name: "ISO 42001", desc: "AI Management System — Decision audit trail requirements (A.6.2.8)", icon: "🤖" },
@@ -14,10 +24,30 @@ export default function ExportPage() {
     { id: "SOC2_TYPE2", name: "SOC 2 Type II", desc: "Trust Service Criteria — Processing Integrity (PI1)", icon: "✅" },
   ];
 
-  const handleExport = () => {
-    setExported(true);
-    setTimeout(() => setExported(false), 3000);
+  const handleExport = async () => {
+    if (!sessionId) return;
+    setExporting(true);
+    try {
+      const data = await api.exportSession(sessionId, standard);
+      // Trigger download of the JSON evidence package
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `agenttrace-${standard}-${sessionId.slice(0, 8)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setExported(true);
+      setTimeout(() => setExported(false), 3000);
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("Export failed. Make sure the session has trace records.");
+    } finally {
+      setExporting(false);
+    }
   };
+
+  const selectedSession = sessions.find((s) => s.id === sessionId);
 
   return (
     <div className="p-8 max-w-[1000px] mx-auto">
@@ -60,19 +90,29 @@ export default function ExportPage() {
           Session to Export
         </label>
         <div className="flex gap-3 mb-6">
-          <input type="text" value={sessionId} onChange={(e) => setSessionId(e.target.value)}
+          <select value={sessionId} onChange={(e) => setSessionId(e.target.value)}
             className="flex-1 px-4 py-3 rounded-lg text-sm font-mono outline-none"
-            style={{ background: "var(--color-bg-primary)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}
-            placeholder="sess-xxxxxxxx" />
-          <button onClick={handleExport}
+            style={{ background: "var(--color-bg-primary)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
+            {sessions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name || "Unnamed"} — {s.id.slice(0, 16)}... ({s._count.records} records)
+              </option>
+            ))}
+          </select>
+          <button onClick={handleExport} disabled={exporting || !sessionId}
             className="px-6 py-3 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all duration-200"
-            style={{ background: exported ? "#059669" : "var(--color-accent)", color: "#fff" }}>
+            style={{ background: exported ? "#059669" : "var(--color-accent)", color: "#fff", opacity: exporting ? 0.7 : 1 }}>
             {exported ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Exported!
+              </>
+            ) : exporting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Exporting...
               </>
             ) : (
               <>
@@ -98,7 +138,11 @@ export default function ExportPage() {
             </div>
             <div className="flex justify-between">
               <span style={{ color: "var(--color-text-muted)" }}>Session</span>
-              <span className="font-mono text-xs" style={{ color: "var(--color-text-accent)" }}>{sessionId}</span>
+              <span className="font-mono text-xs" style={{ color: "var(--color-text-accent)" }}>{selectedSession?.name || sessionId.slice(0, 16)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span style={{ color: "var(--color-text-muted)" }}>Records</span>
+              <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{selectedSession?._count.records || "—"}</span>
             </div>
             <div className="flex justify-between">
               <span style={{ color: "var(--color-text-muted)" }}>Format</span>

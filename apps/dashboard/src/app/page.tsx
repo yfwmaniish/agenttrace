@@ -1,36 +1,109 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { api, type SessionSummary, type TraceRecordDTO, type VerifyResult } from "@/lib/api";
 
-// --- Demo data for hackathon presentation ---
-const DEMO_STATS = {
-  totalTraces: 1847,
-  chainIntegrity: 99.7,
-  activeSessions: 12,
-  merkleRoots: 23,
-  lastVerified: "2 min ago",
-};
+interface DashboardStats {
+  totalTraces: number;
+  chainIntegrity: number;
+  activeSessions: number;
+  merkleRoots: number;
+}
 
-const DEMO_SESSIONS = [
-  { id: "sess-a1b2c3", name: "GPT-4 Research Agent", status: "verified", traces: 342, started: "2 hours ago", agent: "research-agent-v2" },
-  { id: "sess-d4e5f6", name: "Code Review Agent", status: "verified", traces: 128, started: "45 min ago", agent: "code-reviewer-v1" },
-  { id: "sess-g7h8i9", name: "Customer Support Bot", status: "tampered", traces: 89, started: "3 hours ago", agent: "support-agent-v3" },
-  { id: "sess-j0k1l2", name: "Data Analysis Pipeline", status: "verified", traces: 567, started: "1 hour ago", agent: "analytics-v2" },
-  { id: "sess-m3n4o5", name: "Trading Signal Agent", status: "pending", traces: 43, started: "15 min ago", agent: "trading-v1" },
-];
-
-const DEMO_CHAIN = [
-  { seq: 0, hash: "a7f3e2d1c4b5", prevHash: "0000000000", kind: "agent_step", name: "Initialize Context", sig: "3d4e5f6a7b8c", time: "14:23:01" },
-  { seq: 1, hash: "b8e4f3c2d5a6", prevHash: "a7f3e2d1c4b5", kind: "llm_call", name: "GPT-4 Inference", sig: "9e0f1a2b3c4d", time: "14:23:02" },
-  { seq: 2, hash: "c9d5e4f3a6b7", prevHash: "b8e4f3c2d5a6", kind: "tool_invoke", name: "Web Search", sig: "5f6a7b8c9d0e", time: "14:23:04" },
-  { seq: 3, hash: "d0e6f5a4b7c8", prevHash: "c9d5e4f3a6b7", kind: "llm_call", name: "Synthesize Results", sig: "1a2b3c4d5e6f", time: "14:23:06" },
-  { seq: 4, hash: "e1f7a6b5c8d9", prevHash: "d0e6f5a4b7c8", kind: "decision", name: "Final Decision", sig: "7b8c9d0e1f2a", time: "14:23:08" },
-];
+interface ChainBlock {
+  seq: number;
+  hash: string;
+  prevHash: string;
+  kind: string;
+  name: string;
+  sig: string;
+  time: string;
+}
 
 export default function OverviewPage() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [sessions, setSessions] = useState<SessionSummary[]>([]);
+  const [chain, setChain] = useState<ChainBlock[]>([]);
+  const [verifyResults, setVerifyResults] = useState<Record<string, VerifyResult>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    loadData();
+  }, []);
+
+  async function loadData() {
+    try {
+      const { sessions: sessionList } = await api.getSessions();
+      setSessions(sessionList);
+
+      const totalTraces = sessionList.reduce((sum, s) => sum + s._count.records, 0);
+
+      // Verify each session to compute integrity
+      const results: Record<string, VerifyResult> = {};
+      let validChains = 0;
+      for (const s of sessionList) {
+        try {
+          const r = await api.verify(s.id);
+          results[s.id] = r;
+          if (r.valid) validChains++;
+        } catch {
+          results[s.id] = { valid: false, chainLength: 0 };
+        }
+      }
+      setVerifyResults(results);
+
+      const integrity = sessionList.length > 0
+        ? Math.round((validChains / sessionList.length) * 1000) / 10
+        : 100;
+
+      const merkleCount = Object.values(results).filter((r) => r.merkleRoot).length;
+
+      setStats({ totalTraces, chainIntegrity: integrity, activeSessions: sessionList.length, merkleRoots: merkleCount });
+
+      // Load chain visualization from the first session
+      if (sessionList.length > 0) {
+        const { records } = await api.getTraces(sessionList[0].id);
+        setChain(
+          records.slice(0, 8).map((r: TraceRecordDTO) => ({
+            seq: r.sequenceNumber,
+            hash: r.chainHash.slice(0, 12),
+            prevHash: r.previousHash.slice(0, 12),
+            kind: r.spanData.kind,
+            name: r.spanData.name,
+            sig: r.signature.slice(0, 12),
+            time: new Date(r.createdAt).toLocaleTimeString("en-US", { hour12: false }),
+          }))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to load dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (!mounted) return null;
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-[1400px] mx-auto">
+        <div className="mb-8 animate-fade-in">
+          <h1 className="text-2xl font-semibold" style={{ color: "var(--color-text-primary)" }}>Forensic Overview</h1>
+          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading live data from API...</p>
+        </div>
+        <div className="grid grid-cols-4 gap-4 mb-8">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="glass-card p-5 animate-pulse" style={{ minHeight: "100px" }}>
+              <div className="h-4 rounded" style={{ background: "var(--color-border)", width: "60%" }} />
+              <div className="h-8 rounded mt-3" style={{ background: "var(--color-border)", width: "40%" }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -42,7 +115,7 @@ export default function OverviewPage() {
           </h1>
           <span className="badge-verified flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-glow" />
-            System Verified
+            Live Data
           </span>
         </div>
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
@@ -51,12 +124,14 @@ export default function OverviewPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total Traces" value={DEMO_STATS.totalTraces.toLocaleString()} icon="📊" accent="emerald" delay={1} />
-        <StatCard label="Chain Integrity" value={`${DEMO_STATS.chainIntegrity}%`} icon="🛡️" accent="emerald" delay={2} />
-        <StatCard label="Active Sessions" value={DEMO_STATS.activeSessions.toString()} icon="⚡" accent="blue" delay={3} />
-        <StatCard label="Merkle Roots" value={DEMO_STATS.merkleRoots.toString()} icon="🌳" accent="emerald" delay={4} />
-      </div>
+      {stats && (
+        <div className="grid grid-cols-4 gap-4 mb-8">
+          <StatCard label="Total Traces" value={stats.totalTraces.toLocaleString()} icon="📊" accent="emerald" delay={1} />
+          <StatCard label="Chain Integrity" value={`${stats.chainIntegrity}%`} icon="🛡️" accent="emerald" delay={2} />
+          <StatCard label="Active Sessions" value={stats.activeSessions.toString()} icon="⚡" accent="blue" delay={3} />
+          <StatCard label="Merkle Roots" value={stats.merkleRoots.toString()} icon="🌳" accent="emerald" delay={4} />
+        </div>
+      )}
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-5 gap-6">
@@ -66,9 +141,11 @@ export default function OverviewPage() {
             <h2 className="text-sm font-semibold tracking-wide uppercase" style={{ color: "var(--color-text-secondary)" }}>
               Hash Chain Visualization
             </h2>
-            <span className="hash-display">Session: sess-a1b2c3</span>
+            {sessions[0] && (
+              <span className="hash-display">Session: {sessions[0].name || sessions[0].id.slice(0, 12)}</span>
+            )}
           </div>
-          <ChainVisualization chain={DEMO_CHAIN} />
+          <ChainVisualization chain={chain} />
         </div>
 
         {/* Recent Sessions */}
@@ -77,8 +154,8 @@ export default function OverviewPage() {
             Recent Sessions
           </h2>
           <div className="flex flex-col gap-3">
-            {DEMO_SESSIONS.map((session) => (
-              <SessionRow key={session.id} session={session} />
+            {sessions.map((session) => (
+              <SessionRow key={session.id} session={session} verified={verifyResults[session.id]} />
             ))}
           </div>
         </div>
@@ -87,7 +164,7 @@ export default function OverviewPage() {
       {/* Bottom row — Compliance + Activity */}
       <div className="grid grid-cols-2 gap-6 mt-6">
         <ComplianceWidget />
-        <ActivityFeed />
+        <ActivityFeed sessions={sessions} verifyResults={verifyResults} />
       </div>
     </div>
   );
@@ -107,7 +184,7 @@ function StatCard({ label, value, icon, accent, delay }: { label: string; value:
   );
 }
 
-function ChainVisualization({ chain }: { chain: typeof DEMO_CHAIN }) {
+function ChainVisualization({ chain }: { chain: ChainBlock[] }) {
   const kindColors: Record<string, string> = {
     agent_step: "#3b82f6",
     llm_call: "#10b981",
@@ -115,32 +192,33 @@ function ChainVisualization({ chain }: { chain: typeof DEMO_CHAIN }) {
     decision: "#8b5cf6",
   };
 
+  if (chain.length === 0) {
+    return <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>No chain data available</p>;
+  }
+
   return (
     <div className="flex flex-col gap-0">
       {chain.map((block, i) => (
         <div key={block.seq} className="flex items-start gap-4" style={{ animationDelay: `${i * 0.1}s` }}>
-          {/* Chain connector */}
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold border"
               style={{
-                background: `${kindColors[block.kind]}15`,
-                borderColor: `${kindColors[block.kind]}40`,
-                color: kindColors[block.kind],
+                background: `${kindColors[block.kind] || "#6b7280"}15`,
+                borderColor: `${kindColors[block.kind] || "#6b7280"}40`,
+                color: kindColors[block.kind] || "#6b7280",
               }}>
               #{block.seq}
             </div>
             {i < chain.length - 1 && (
-              <div className="w-0.5 h-8" style={{ background: `linear-gradient(to bottom, ${kindColors[block.kind]}60, transparent)` }} />
+              <div className="w-0.5 h-8" style={{ background: `linear-gradient(to bottom, ${kindColors[block.kind] || "#6b7280"}60, transparent)` }} />
             )}
           </div>
-
-          {/* Block content */}
           <div className="flex-1 pb-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>{block.name}</span>
               <span className="px-1.5 py-0.5 rounded text-[10px] font-medium" style={{
-                background: `${kindColors[block.kind]}15`,
-                color: kindColors[block.kind],
+                background: `${kindColors[block.kind] || "#6b7280"}15`,
+                color: kindColors[block.kind] || "#6b7280",
               }}>
                 {block.kind}
               </span>
@@ -163,9 +241,10 @@ function ChainVisualization({ chain }: { chain: typeof DEMO_CHAIN }) {
   );
 }
 
-function SessionRow({ session }: { session: typeof DEMO_SESSIONS[0] }) {
-  const statusBadge = session.status === "verified" ? "badge-verified"
-    : session.status === "tampered" ? "badge-tampered" : "badge-pending";
+function SessionRow({ session, verified }: { session: SessionSummary; verified?: VerifyResult }) {
+  const status = verified ? (verified.valid ? "verified" : "tampered") : "pending";
+  const statusBadge = status === "verified" ? "badge-verified"
+    : status === "tampered" ? "badge-tampered" : "badge-pending";
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200"
@@ -174,13 +253,13 @@ function SessionRow({ session }: { session: typeof DEMO_SESSIONS[0] }) {
       onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}>
       <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
         style={{ background: "var(--color-accent-glow)", color: "var(--color-accent)" }}>
-        {session.name[0]}
+        {(session.name || "?")[0]}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium truncate" style={{ color: "var(--color-text-primary)" }}>{session.name}</div>
-        <div className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{session.traces} traces • {session.started}</div>
+        <div className="text-sm font-medium truncate" style={{ color: "var(--color-text-primary)" }}>{session.name || session.id}</div>
+        <div className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{session._count.records} traces</div>
       </div>
-      <span className={statusBadge}>{session.status}</span>
+      <span className={statusBadge}>{status}</span>
     </div>
   );
 }
@@ -216,14 +295,24 @@ function ComplianceWidget() {
   );
 }
 
-function ActivityFeed() {
-  const activities = [
-    { time: "14:23:08", event: "Chain verified", detail: "Session sess-a1b2c3 • 342 records • Integrity: PASS", type: "success" },
-    { time: "14:22:55", event: "Tamper detected", detail: "Session sess-g7h8i9 • Record #67 modified • Chain BROKEN", type: "danger" },
-    { time: "14:22:30", event: "Merkle root anchored", detail: "Root e1f7a6b5... committed to git:main@abc1234", type: "info" },
-    { time: "14:22:01", event: "New session started", detail: "Trading Signal Agent • Project: hedgefund-alpha", type: "info" },
-    { time: "14:21:45", event: "Export generated", detail: "ISO 42001 compliance report • Session sess-d4e5f6", type: "success" },
-  ];
+function ActivityFeed({ sessions, verifyResults }: { sessions: SessionSummary[]; verifyResults: Record<string, VerifyResult> }) {
+  const activities = sessions.slice(0, 5).map((s) => {
+    const v = verifyResults[s.id];
+    if (v && !v.valid) {
+      return {
+        time: new Date(s.startedAt).toLocaleTimeString("en-US", { hour12: false }),
+        event: "Tamper detected",
+        detail: `Session ${s.name || s.id.slice(0, 12)} • ${s._count.records} records • Chain BROKEN`,
+        type: "danger",
+      };
+    }
+    return {
+      time: new Date(s.startedAt).toLocaleTimeString("en-US", { hour12: false }),
+      event: v?.valid ? "Chain verified" : "Session recorded",
+      detail: `Session ${s.name || s.id.slice(0, 12)} • ${s._count.records} records${v?.valid ? " • Integrity: PASS" : ""}`,
+      type: v?.valid ? "success" : "info",
+    };
+  });
 
   const typeColors: Record<string, string> = { success: "#10b981", danger: "#ef4444", info: "#3b82f6" };
 
