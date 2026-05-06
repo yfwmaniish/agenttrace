@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 // --- Demo data for hackathon presentation ---
 const DEMO_STATS = {
   totalTraces: 1847,
@@ -28,10 +26,6 @@ const DEMO_CHAIN = [
 ];
 
 export default function OverviewPage() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
-
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
       {/* Header */}

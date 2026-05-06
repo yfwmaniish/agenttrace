@@ -38,7 +38,7 @@ export default function VerifyPage() {
       <div className="mb-8 animate-fade-in">
         <h1 className="text-2xl font-semibold mb-1" style={{ color: "var(--color-text-primary)" }}>Chain Verification</h1>
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Cryptographically verify the integrity of any agent session's audit trail
+          Cryptographically verify the integrity of any agent session&apos;s audit trail
         </p>
       </div>
 
