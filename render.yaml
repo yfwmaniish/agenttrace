@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: agenttrace-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PORT
+        value: 3001
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
