@@ -1,0 +1,118 @@
+Metadata-Version: 2.4
+Name: agenttrace
+Version: 0.1.0
+Summary: Cryptographic forensic audit SDK for AI agents — Ed25519 signing, SHA-256 hash chains, tamper detection
+Author: AgentTrace
+License: MIT
+Project-URL: Homepage, https://github.com/yfwmaniish/agenttrace
+Project-URL: Repository, https://github.com/yfwmaniish/agenttrace
+Project-URL: Documentation, https://github.com/yfwmaniish/agenttrace#readme
+Project-URL: Issues, https://github.com/yfwmaniish/agenttrace/issues
+Keywords: ai,agent,audit,forensic,cryptography,ed25519,sha256,hash-chain,tamper-detection,compliance,langchain,observability
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: System :: Logging
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cryptography>=44.0
+Requires-Dist: httpx>=0.28
+Provides-Extra: langchain
+Requires-Dist: langchain-core>=0.3; extra == "langchain"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.25; extra == "dev"
+Dynamic: license-file
+
+# agenttrace (Python)
+
+Cryptographic forensic audit SDK for AI agents — Ed25519 signing, SHA-256 hash chains, tamper detection.
+
+## Features
+
+- **Ed25519 Signatures** — Every trace record is cryptographically signed
+- **SHA-256 Hash Chains** — Tamper-proof linked records
+- **Context Manager API** — Pythonic `with` syntax for tracing
+- **Async HTTP Transport** — Non-blocking trace delivery via `httpx`
+- **LangChain Compatible** — Optional adapter for LangChain agents
+- **Cross-Language Parity** — Identical crypto output as the TypeScript SDK
+
+## Install
+
+```bash
+pip install agenttrace
+```
+
+## Quick Start
+
+```python
+from agenttrace import AgentTraceClient
+
+client = AgentTraceClient(
+    endpoint="http://localhost:4000",
+    agent_id="research-agent-v2"
+)
+
+# Context manager auto-signs and chains
+with client.trace("GPT-4 Inference", kind="llm_call") as span:
+    span.set_input({"model": "gpt-4", "prompt": "Analyze quarterly earnings"})
+    result = call_llm(...)
+    span.set_output({"tokens": 342, "response": result})
+
+# Explicit flush
+await client.flush()
+```
+
+## Standalone Crypto
+
+```python
+from agenttrace.crypto import generate_keypair, sign_message, verify_signature
+import hashlib
+
+# Generate Ed25519 keypair
+private_key, public_key = generate_keypair()
+
+# Sign data
+message = b"critical agent decision"
+signature = sign_message(private_key, message)
+
+# Verify
+is_valid = verify_signature(public_key, message, signature)
+assert is_valid
+```
+
+## LangChain Integration
+
+```bash
+pip install agenttrace[langchain]
+```
+
+```python
+from agenttrace.adapters.langchain import AgentTraceCallbackHandler
+
+handler = AgentTraceCallbackHandler(client)
+agent = AgentExecutor(callbacks=[handler])
+# All LLM calls auto-traced with forensic signatures
+```
+
+## Cryptographic Standards
+
+| Property | Standard |
+|----------|----------|
+| Content hashing | SHA-256 (FIPS 180-4) |
+| Digital signatures | Ed25519 (RFC 8032) |
+| Chain integrity | Hash(content ‖ previous_hash) |
+
+## License
+
+MIT

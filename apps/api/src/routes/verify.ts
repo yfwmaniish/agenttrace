@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { prisma } from '../db/client.js';
-import { verifyChain, findTamperPoint, computeMerkleRoot } from '@agenttrace/core';
-import type { TraceRecord as CoreTraceRecord, Span } from '@agenttrace/core';
+import { verifyChain, findTamperPoint, computeMerkleRoot } from '@yfwdecimal/core';
+import type { TraceRecord as CoreTraceRecord, Span } from '@yfwdecimal/core';
 
 /** Convert DB record to core TraceRecord for verification */
 function toCore(dbRecord: any): CoreTraceRecord {

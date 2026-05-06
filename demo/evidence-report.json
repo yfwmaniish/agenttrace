@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "generator": "AgentTrace v0.1.0",
+    "generatedAt": "2026-05-05T23:36:28.362Z",
+    "standard": {
+      "name": "ISO/IEC 42001:2023",
+      "section": "A.6.2.8"
+    }
+  },
+  "summary": {
+    "totalRecords": 7,
+    "chainIntegrity": "VERIFIED",
+    "merkleRoot": "9326b57603426dd85df05d2675e1d8775ee1042e4bc180fa034a57b5b22e0eff",
+    "hashAlgorithm": "SHA-256 (FIPS 180-4)",
+    "signatureAlgorithm": "Ed25519 (RFC 8032)"
+  },
+  "records": [
+    {
+      "seq": 0,
+      "name": "User Query: \"Analyze Q3 financials\"",
+      "kind": "agent_step",
+      "chainHash": "37b24e396e88e5eb47b65388c6fda9ceb98d6d655aa035d164259f2802adea39",
+      "signature": "ef027381fdca82d594ae7c7c9f67369a..."
+    },
+    {
+      "seq": 1,
+      "name": "GPT-4o Financial Analysis",
+      "kind": "llm_call",
+      "chainHash": "b9b6d34ccc36162ec43571c6544196a77503c4a7b68df8382c9d82a625113fde",
+      "signature": "03966d5d28e1ee8f7407a3e58b3d62c4..."
+    },
+    {
+      "seq": 2,
+      "name": "Bloomberg API: Market Data",
+      "kind": "tool_invoke",
+      "chainHash": "b6489408282c8fd8a636fd70d8164da00cc2411669d97a171730a13d130b63e9",
+      "signature": "a82f7c4fe1b3164af8a5aeb3e18783fb..."
+    },
+    {
+      "seq": 3,
+      "name": "RAG: Internal Reports",
+      "kind": "retrieval",
+      "chainHash": "cba316e66e11291ab0256eb8e733a1a25c7da66668209062e7181c8678ef33f1",
+      "signature": "6923521060afdad8a2c6adfb4cf25064..."
+    },
+    {
+      "seq": 4,
+      "name": "GPT-4o: Synthesize Report",
+      "kind": "llm_call",
+      "chainHash": "ca4a4134eadab7accb1da1923f1c189d5f071e0032c9e7cfee6cea5f019ba662",
+      "signature": "3f01d3fea1d6c580403440b047a480a0..."
+    },
+    {
+      "seq": 5,
+      "name": "Compliance Check",
+      "kind": "agent_step",
+      "chainHash": "2c04a5dcc1c981b9ba73afa65098419b50690dbb6a1e6899426facc19b9e3f5f",
+      "signature": "d678bbea393c1ac5dfa6594308c9c646..."
+    },
+    {
+      "seq": 6,
+      "name": "Deliver Report to User",
+      "kind": "agent_step",
+      "chainHash": "5dc87e8c8eaf76374a337afc0372080f5e68312c1eba6b384715eab06ccc5ec0",
+      "signature": "ef5cdfc8523b41b62514c919b2dfda91..."
+    }
+  ]
+}

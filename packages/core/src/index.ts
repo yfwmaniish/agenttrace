@@ -1,5 +1,5 @@
 /**
- * @agenttrace/core — Public API
+ * @yfwdecimal/core — Public API
  *
  * Cryptographic engine for tamper-evident AI agent execution traces.
  * Provides Ed25519 signing, SHA-256 hash chains, and Merkle trees.

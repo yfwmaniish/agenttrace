@@ -1,5 +1,5 @@
 {
-  "name": "@agenttrace/api",
+  "name": "@yfwdecimal/api",
   "version": "0.1.0",
   "description": "Fastify REST API — append-only trace ingestion, verification, compliance export",
   "main": "./dist/index.js",
@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist",
     "lint": "tsc --noEmit",
     "db:migrate": "prisma migrate dev",
@@ -15,7 +15,7 @@
     "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
-    "@agenttrace/core": "workspace:*",
+    "@yfwdecimal/core": "workspace:*",
     "@fastify/cors": "^11.2.0",
     "@fastify/sensible": "^6.0.4",
     "@prisma/adapter-pg": "^7.8.0",

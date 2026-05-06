@@ -1,0 +1,127 @@
+{
+  "_meta": {
+    "generator": "AgentTrace CLI v0.1.0",
+    "generatedAt": "2026-05-05T23:22:07.054Z",
+    "standard": {
+      "name": "NIST AI RMF 1.0",
+      "section": "MG-3.2",
+      "description": "AI Risk Management Framework — Measurement"
+    }
+  },
+  "summary": {
+    "totalRecords": 8,
+    "chainIntegrity": "VERIFIED",
+    "errors": 0,
+    "merkleRoot": "586ed58cb54c0b6dc303187c76a394d75f155d04f755b40e05bcfbdb0f87a81f",
+    "hashAlgorithm": "SHA-256 (FIPS 180-4)",
+    "signatureAlgorithm": "Ed25519 (RFC 8032)",
+    "firstRecord": "3d3e3861-f9dd-44cc-9efe-6a1c2d8d697f",
+    "lastRecord": "dce93b5d-5f35-4b0b-9c39-2fd61a26bea1"
+  },
+  "verification": {
+    "valid": true,
+    "chainLength": 8,
+    "firstRecord": "3d3e3861-f9dd-44cc-9efe-6a1c2d8d697f",
+    "lastRecord": "dce93b5d-5f35-4b0b-9c39-2fd61a26bea1",
+    "errors": [],
+    "verifiedAt": "2026-05-05T23:22:07.053Z"
+  },
+  "records": [
+    {
+      "sequence": 0,
+      "spanName": "Initialize Agent",
+      "spanKind": "agent_step",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:38.026Z",
+      "endTime": "2026-05-05T23:19:39.526Z",
+      "contentHash": "3de11171f381fe772c93da646b4000972674dceef3a91053d1e46593fb3551d3",
+      "chainHash": "45beb07405b728ef7078a5879a0d47a3f82ddbcaf657c5913da844484afa8a31",
+      "signature": "28f2b5200416c51ae65e7e27ed09c6eee458697dabc427d73d90a71418f5f60ff7aff397b33610b2285d9e7f7b0779b512c69e3b5a39deb1ce482d26b8add303",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 1,
+      "spanName": "User Query Received",
+      "spanKind": "agent_step",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:40.027Z",
+      "endTime": "2026-05-05T23:19:41.527Z",
+      "contentHash": "c741e079223d1fdfecd799f144dc3ac7222e94a55d5fa594f76fa72d3e74e1ae",
+      "chainHash": "862fcf0df3f955acca49bbb532b90d714342ff026e4d6d802520e75bc8b62117",
+      "signature": "6a8f07c4d710f3374927ff13ac59c3787606ed003e0653d3048e2ccd4ff58932c538599a234360cc539a14ea813a606f54937707685105e8f693a031bd89dd09",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 2,
+      "spanName": "GPT-4 Inference",
+      "spanKind": "llm_call",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:42.027Z",
+      "endTime": "2026-05-05T23:19:43.527Z",
+      "contentHash": "f2edb0fd571ce1ea39c68c38ca05f63695f908ca0a56131de5031531a8bf3dfe",
+      "chainHash": "ab54d20591dc629e2a94a9ee48b6234eae65d03e28a1dc4460992493784da4b0",
+      "signature": "ad376c955fa5190b0f35991cc0a186f0c978f64daed287831666ccd9042eab69ce2eddecf7bb0fc291e3517dad48582d805bb57469c5c763e032c7532f214004",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 3,
+      "spanName": "Web Search",
+      "spanKind": "tool_invoke",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:44.027Z",
+      "endTime": "2026-05-05T23:19:45.527Z",
+      "contentHash": "a470a017c18a1cf537567e9b9d5054e43c0483dcd3fbc0d9392f034188d1932c",
+      "chainHash": "01e75417e787d578e58dd08ad0606c4690453b03f1c193a4f2975df75e764846",
+      "signature": "14c029e60bc6bf7c2df3e072aa3cab8a6fef802507f08b5275bfdafc388dcbacd8a331c44c029af54696bbbd482b55d825d0c4e4744ac17d018669794baaf909",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 4,
+      "spanName": "RAG Retrieval",
+      "spanKind": "retrieval",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:46.028Z",
+      "endTime": "2026-05-05T23:19:47.528Z",
+      "contentHash": "a6ac333eef7f6267d7a6aa5d1cf7b7876d753232ea0f89171ed43d808e542609",
+      "chainHash": "08a0f95f82739ede442b144dbcaba951b0f665dae5bb438b4a0e8147ea72b207",
+      "signature": "690cdd79c70724fb7169264e4969142fc36e5be3445d5ea78d047bd75f2e9712ba115016e9cd4b818d65ab0b84a8d6d3dcd2636251a17612c9152e9451243b07",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 5,
+      "spanName": "Synthesize Response",
+      "spanKind": "llm_call",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:48.028Z",
+      "endTime": "2026-05-05T23:19:49.528Z",
+      "contentHash": "23976d4299f6266c4f45e4e6c342fa61fece75ad0f888953b9d5a6ebe2967ef0",
+      "chainHash": "1552a7ae357e602a9581d3ba4c07c2db24f2811acbf614a5d61cac9e8fb0434f",
+      "signature": "c3c617c66a1405272e7a94ed32764c05bd32ea459b8d28399699898b6906e51e89358797e8cb4ed217260d4e41f23f172c4aca122aafa6011b38351fd44a530f",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 6,
+      "spanName": "Safety Check",
+      "spanKind": "agent_step",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:50.028Z",
+      "endTime": "2026-05-05T23:19:51.528Z",
+      "contentHash": "c94cd818a65ba6909ac64bf30a929b63546a4cdd037b37da61fc51d7d665562d",
+      "chainHash": "73bfe8de7214d66cd896bf2192197758f0aae45dc49305ae5e5f449027bcba3f",
+      "signature": "af24c281ba031e028826d49e7bb0ff625d8d4b66dcb44f53fcb3232ccb87650de6c8deeaf23575a1759fa4b71ba852f3dae4610585bf7f5ca1a85744570a970d",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    },
+    {
+      "sequence": 7,
+      "spanName": "Deliver Response",
+      "spanKind": "agent_step",
+      "status": "completed",
+      "startTime": "2026-05-05T23:19:52.028Z",
+      "endTime": "2026-05-05T23:19:53.528Z",
+      "contentHash": "d12838f45ae161badeaba05fb3d5b3e861f5368433bfc3bc8a3af30e6f2a4c08",
+      "chainHash": "224ad86c01f78aa48f18db036004b108db70b058665f4a62ae824b41ff5523d1",
+      "signature": "7dac8fc6de53e11d94d502797b40ccb19bbb02d5d1fb994bc9c9615f6cd01a8e5c8f9a26f12cb11efdcb516f6df7f9b410291add544fd8c9a8447ba40ee7df0b",
+      "publicKey": "302a300506032b657003210051de68369213bcf016456bb8519c2f7b9da36efcf3f288c8e5cbbfc85883002c"
+    }
+  ]
+}

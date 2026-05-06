@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { prisma } from '../db/client.js';
-import { generateKeyPair } from '@agenttrace/core';
+import { generateKeyPair } from '@yfwdecimal/core';
 import { randomBytes } from 'crypto';
 
 export async function projectRoutes(app: FastifyInstance) {

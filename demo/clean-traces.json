@@ -1,0 +1,222 @@
+[
+  {
+    "id": "096d38f4-13ef-481f-9863-5bef70c7684e",
+    "sequenceNumber": 0,
+    "span": {
+      "spanId": "span-000",
+      "traceId": "trace-demo-financial",
+      "sessionId": "sess-financial-001",
+      "name": "User Query: \"Analyze Q3 financials\"",
+      "kind": "agent_step",
+      "startTime": "2026-05-05T23:36:24.505Z",
+      "endTime": "2026-05-05T23:36:26.005Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "query": "Analyze Q3 2025 financial results for ACME Corp"
+      },
+      "output": {
+        "intent": "financial_analysis",
+        "confidence": 0.97
+      }
+    },
+    "contentHash": "769396574fbdd3e2817ebd84b4538cc23680dd12e552992b23012eb703f86ab5",
+    "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "chainHash": "37b24e396e88e5eb47b65388c6fda9ceb98d6d655aa035d164259f2802adea39",
+    "signature": "ef027381fdca82d594ae7c7c9f67369af3b293029e3d36955529010ab32fe05f92580f7a084191848c8a929badc9c809480bd93a7fc9e50e26834a26ab8abc0f",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:24.506Z"
+  },
+  {
+    "id": "28160c1e-8dd4-4afd-a1e4-4b3c970f79e4",
+    "sequenceNumber": 1,
+    "span": {
+      "spanId": "span-001",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "GPT-4o Financial Analysis",
+      "kind": "llm_call",
+      "startTime": "2026-05-05T23:36:26.707Z",
+      "endTime": "2026-05-05T23:36:28.207Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "model": "gpt-4o",
+        "prompt": "Analyze revenue trends...",
+        "temperature": 0.1
+      },
+      "output": {
+        "tokens": 1247,
+        "latency": "2.3s",
+        "response": "Revenue grew 23% YoY..."
+      }
+    },
+    "contentHash": "08057498c1adc1763f22446a679473a225bfca152efbd127851fafedb409b19c",
+    "previousHash": "37b24e396e88e5eb47b65388c6fda9ceb98d6d655aa035d164259f2802adea39",
+    "chainHash": "b9b6d34ccc36162ec43571c6544196a77503c4a7b68df8382c9d82a625113fde",
+    "signature": "03966d5d28e1ee8f7407a3e58b3d62c4ce85732138cb75f343e0de4d7e66ae079371c7be00788e483e08c4db8ceec7d88c3efd58866e16aa99f3f1b6e6cee003",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:24.708Z"
+  },
+  {
+    "id": "9e1a4a30-fa52-4bbf-a469-a2ef3f8b07d6",
+    "sequenceNumber": 2,
+    "span": {
+      "spanId": "span-002",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "Bloomberg API: Market Data",
+      "kind": "tool_invoke",
+      "startTime": "2026-05-05T23:36:28.910Z",
+      "endTime": "2026-05-05T23:36:30.410Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "tool": "bloomberg_api",
+        "ticker": "ACME",
+        "period": "Q3-2025"
+      },
+      "output": {
+        "revenue": "$4.2B",
+        "eps": "$3.47",
+        "pe_ratio": 28.5
+      }
+    },
+    "contentHash": "d07d23027f3a6c2b84d51e1b9aedfd9f13cd000be43b90ec3bcade008860a250",
+    "previousHash": "b9b6d34ccc36162ec43571c6544196a77503c4a7b68df8382c9d82a625113fde",
+    "chainHash": "b6489408282c8fd8a636fd70d8164da00cc2411669d97a171730a13d130b63e9",
+    "signature": "a82f7c4fe1b3164af8a5aeb3e18783fb74691346fcb50f2ef34faf65561449f6926d31c04c20a84d0144035b961fa7c756e7d361e3a82f2ad710ba1d9c424103",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:24.910Z"
+  },
+  {
+    "id": "aca04813-da25-4bce-b536-a48538fdfc4c",
+    "sequenceNumber": 3,
+    "span": {
+      "spanId": "span-003",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "RAG: Internal Reports",
+      "kind": "retrieval",
+      "startTime": "2026-05-05T23:36:31.114Z",
+      "endTime": "2026-05-05T23:36:32.614Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "source": "internal_knowledge_base",
+        "query": "ACME Corp Q3 earnings"
+      },
+      "output": {
+        "documents": 7,
+        "avg_relevance": 0.91
+      }
+    },
+    "contentHash": "f07c6551b26429c353b7f79271abdd47a3854615d2ca6a401fb0b865eb497aeb",
+    "previousHash": "b6489408282c8fd8a636fd70d8164da00cc2411669d97a171730a13d130b63e9",
+    "chainHash": "cba316e66e11291ab0256eb8e733a1a25c7da66668209062e7181c8678ef33f1",
+    "signature": "6923521060afdad8a2c6adfb4cf25064e77f31b0c21c921f5f4a137b8fd1229b20f285a95c939b187f0ec27c56c45972cd9bbf92ef039e380664020cbf3c060a",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:25.115Z"
+  },
+  {
+    "id": "4d630c31-1abf-4aa7-b5c3-bb27e1a574fe",
+    "sequenceNumber": 4,
+    "span": {
+      "spanId": "span-004",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "GPT-4o: Synthesize Report",
+      "kind": "llm_call",
+      "startTime": "2026-05-05T23:36:33.317Z",
+      "endTime": "2026-05-05T23:36:34.817Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "model": "gpt-4o",
+        "context": "1247 tokens + 7 documents + market data"
+      },
+      "output": {
+        "tokens": 2891,
+        "recommendation": "BUY",
+        "confidence": 0.89
+      }
+    },
+    "contentHash": "5e4a914821683b11bddd8b183d10c0d69e9b36c64c6024ccb742dcd3e8c45ecc",
+    "previousHash": "cba316e66e11291ab0256eb8e733a1a25c7da66668209062e7181c8678ef33f1",
+    "chainHash": "ca4a4134eadab7accb1da1923f1c189d5f071e0032c9e7cfee6cea5f019ba662",
+    "signature": "3f01d3fea1d6c580403440b047a480a0e2e968412ea47343753360fd1f59b6560066c29cfea3d2d160451bd9516b5235e290ea51c93af0648b8054caed3d9106",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:25.318Z"
+  },
+  {
+    "id": "8443daa0-fa56-4c33-acdd-2736009f594f",
+    "sequenceNumber": 5,
+    "span": {
+      "spanId": "span-005",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "Compliance Check",
+      "kind": "agent_step",
+      "startTime": "2026-05-05T23:36:35.518Z",
+      "endTime": "2026-05-05T23:36:37.018Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "check": "financial_advice_disclaimer"
+      },
+      "output": {
+        "compliant": true,
+        "disclaimers_added": 2
+      }
+    },
+    "contentHash": "14763b11948f43cc8279c93aa12f71a074bfcb9d58b31d4f171a91e441095fe3",
+    "previousHash": "ca4a4134eadab7accb1da1923f1c189d5f071e0032c9e7cfee6cea5f019ba662",
+    "chainHash": "2c04a5dcc1c981b9ba73afa65098419b50690dbb6a1e6899426facc19b9e3f5f",
+    "signature": "d678bbea393c1ac5dfa6594308c9c646281f4371c2c23af4edb9e13619f32413b9325c41f3045be909af62525b9373dd9d26eb276863455407d8e5e39b380704",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:25.518Z"
+  },
+  {
+    "id": "80c2f9fd-19b6-4fb9-be5f-cf275e65b14d",
+    "sequenceNumber": 6,
+    "span": {
+      "spanId": "span-006",
+      "traceId": "trace-demo-financial",
+      "parentSpanId": "span-000",
+      "sessionId": "sess-financial-001",
+      "name": "Deliver Report to User",
+      "kind": "agent_step",
+      "startTime": "2026-05-05T23:36:37.721Z",
+      "endTime": "2026-05-05T23:36:39.221Z",
+      "status": "completed",
+      "attributes": {},
+      "events": [],
+      "input": {
+        "channel": "dashboard",
+        "format": "PDF"
+      },
+      "output": {
+        "delivered": true,
+        "report_size": "24KB",
+        "timestamp": "2026-05-05T23:36:24.505Z"
+      }
+    },
+    "contentHash": "a36d7fdd405bf7ad32e6cbde0722a3fddd0be1a3ac830b33e99090c332d2f15d",
+    "previousHash": "2c04a5dcc1c981b9ba73afa65098419b50690dbb6a1e6899426facc19b9e3f5f",
+    "chainHash": "5dc87e8c8eaf76374a337afc0372080f5e68312c1eba6b384715eab06ccc5ec0",
+    "signature": "ef5cdfc8523b41b62514c919b2dfda91991449dd4288fc8bcee9b01fc3f6f82917fa444d855fd3b4d7f0eb7d29752b9c3bc94aefc8a7a0395701201373dc9f0b",
+    "publicKey": "302a300506032b657003210056a7a0e89bb7f4dff3ea1f2ed4582fd1c437bc178e2f952d8be443b4593f2d02",
+    "timestamp": "2026-05-05T23:36:25.722Z"
+  }
+]

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { prisma } from '../db/client.js';
-import type { TraceRecord, Span } from '@agenttrace/core';
+import type { TraceRecord, Span } from '@yfwdecimal/core';
 
 export async function traceRoutes(app: FastifyInstance) {
   /** Ingest trace records (append-only) */

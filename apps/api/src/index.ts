@@ -1,5 +1,5 @@
 /**
- * @agenttrace/api — Fastify REST API Server
+ * @yfwdecimal/api — Fastify REST API Server
  *
  * Endpoints:
  * - POST /api/traces     — Ingest signed trace records

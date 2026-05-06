@@ -1,21 +1,22 @@
 {
-  "name": "@agenttrace/cli",
+  "name": "@yfwdecimal/cli",
   "version": "0.1.0",
   "description": "AgentTrace CLI — verify chains, export compliance reports, manage keys",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "module",
   "bin": {
     "agenttrace": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@agenttrace/core": "workspace:*"
+    "@yfwdecimal/core": "workspace:*"
   },
   "license": "MIT"
 }

@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+agenttrace/__init__.py
+agenttrace/client.py
+agenttrace/crypto.py
+agenttrace/span.py
+agenttrace.egg-info/PKG-INFO
+agenttrace.egg-info/SOURCES.txt
+agenttrace.egg-info/dependency_links.txt
+agenttrace.egg-info/requires.txt
+agenttrace.egg-info/top_level.txt
+tests/test_sdk.py

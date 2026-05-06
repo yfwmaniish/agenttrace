@@ -1,16 +1,52 @@
 {
-  "name": "@agenttrace/core",
+  "name": "@yfwdecimal/core",
   "version": "0.1.0",
-  "description": "Cryptographic engine — Ed25519 signing, SHA-256 hash chains, Merkle trees",
+  "description": "Cryptographic engine for AI agent forensic auditing — Ed25519 signing, SHA-256 hash chains, Merkle trees",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "rimraf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
-  "license": "MIT"
+  "keywords": [
+    "ai",
+    "agent",
+    "audit",
+    "forensic",
+    "cryptography",
+    "ed25519",
+    "sha256",
+    "hash-chain",
+    "merkle-tree",
+    "tamper-detection",
+    "compliance",
+    "iso-42001"
+  ],
+  "author": "AgentTrace",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yfwmaniish/agenttrace",
+    "directory": "packages/core"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

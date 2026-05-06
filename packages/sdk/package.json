@@ -1,18 +1,60 @@
 {
-  "name": "@agenttrace/sdk",
-  "version": "0.1.0",
-  "description": "Agent instrumentation SDK — framework-agnostic with LangChain + Vercel AI adapters",
+  "name": "@yfwdecimal/sdk",
+  "version": "0.1.1",
+  "description": "Agent instrumentation SDK for forensic auditing — auto-signing, hash-chaining, LangChain adapter",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters/langchain": {
+      "types": "./dist/adapters/langchain.d.ts",
+      "import": "./dist/adapters/langchain.js"
+    },
+    "./adapters/generic": {
+      "types": "./dist/adapters/generic.d.ts",
+      "import": "./dist/adapters/generic.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@agenttrace/core": "workspace:*"
+    "@yfwdecimal/core": "^0.1.0"
   },
-  "license": "MIT"
+  "keywords": [
+    "ai",
+    "agent",
+    "sdk",
+    "instrumentation",
+    "langchain",
+    "observability",
+    "tracing",
+    "audit",
+    "forensic",
+    "compliance"
+  ],
+  "author": "AgentTrace",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yfwmaniish/agenttrace",
+    "directory": "packages/sdk"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

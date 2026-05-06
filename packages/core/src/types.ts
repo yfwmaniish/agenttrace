@@ -1,5 +1,5 @@
 /**
- * @agenttrace/core — Core type definitions
+ * @yfwdecimal/core — Core type definitions
  *
  * These types define the data model for tamper-evident execution traces.
  * Every type is designed for deterministic serialization and cryptographic signing.

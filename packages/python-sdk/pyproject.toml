@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agenttrace"
+version = "0.1.0"
+description = "Cryptographic forensic audit SDK for AI agents — Ed25519 signing, SHA-256 hash chains, tamper detection"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "AgentTrace"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Logging",
+    "Typing :: Typed",
+]
+keywords = [
+    "ai", "agent", "audit", "forensic", "cryptography",
+    "ed25519", "sha256", "hash-chain", "tamper-detection",
+    "compliance", "langchain", "observability"
+]
+dependencies = [
+    "cryptography>=44.0",
+    "httpx>=0.28",
+]
+
+[project.optional-dependencies]
+langchain = ["langchain-core>=0.3"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.25"]
+
+[project.urls]
+Homepage = "https://github.com/yfwmaniish/agenttrace"
+Repository = "https://github.com/yfwmaniish/agenttrace"
+Documentation = "https://github.com/yfwmaniish/agenttrace#readme"
+Issues = "https://github.com/yfwmaniish/agenttrace/issues"
+
+[tool.setuptools.packages.find]
+include = ["agenttrace*"]
