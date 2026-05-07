@@ -174,9 +174,17 @@ async function seed() {
   ];
   for (const s of spans3) chain3.append(s);
   const records3 = [...chain3.getRecords()];
+  const tamperedIdx = 3;
 
-  // TAMPER record #3 — corrupt the chain hash
-  records3[3] = { ...records3[3], chainHash: 'TAMPERED_' + records3[3].chainHash.slice(9) };
+  // TAMPER record #3 — modify the span data (the business logic)
+  // This will cause a contentHash mismatch, which is the most critical forensic failure.
+  records3[tamperedIdx] = { 
+    ...records3[tamperedIdx], 
+    span: { 
+      ...records3[tamperedIdx].span, 
+      output: "Refund denied due to policy violation (TAMPERED)" 
+    }
+  };
 
   await prisma.traceRecord.createMany({
     data: records3.map((r) => ({

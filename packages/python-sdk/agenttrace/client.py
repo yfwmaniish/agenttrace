@@ -59,7 +59,7 @@ class AgentTraceClient:
         self._sequence += 1
 
     async def flush(self):
-        """Send buffered records to the AgentTrace API."""
+        """Send buffered records to the AgentTrace API (Async)."""
         if not self._buffer or not self.endpoint:
             return
         import httpx
@@ -68,6 +68,22 @@ class AgentTraceClient:
             if self.api_key:
                 headers["Authorization"] = f"Bearer {self.api_key}"
             await http.post(f"{self.endpoint}/traces", json={
+                "sessionId": self.session_id,
+                "projectId": self.project_id,
+                "records": self._buffer,
+            }, headers=headers)
+        self._buffer.clear()
+
+    def flush_sync(self):
+        """Send buffered records to the AgentTrace API (Sync)."""
+        if not self._buffer or not self.endpoint:
+            return
+        import httpx
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+        with httpx.Client() as http:
+            http.post(f"{self.endpoint}/traces", json={
                 "sessionId": self.session_id,
                 "projectId": self.project_id,
                 "records": self._buffer,

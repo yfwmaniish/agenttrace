@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+const fs = require('fs');
+const content = `import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={\`dark \${inter.variable} \${jetbrainsMono.variable}\`}>
       <head>
       </head>
       <body className="antialiased">
@@ -105,3 +106,5 @@ function FileIcon() {
     </svg>
   );
 }
+`;
+fs.writeFileSync('apps/dashboard/src/app/layout.tsx', content);

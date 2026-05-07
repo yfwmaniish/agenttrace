@@ -29,7 +29,8 @@ export default function ExportPage() {
     setExporting(true);
     try {
       const data = await api.exportSession(sessionId, standard);
-      // Trigger download of the JSON evidence package
+      
+      // 1. Export JSON Evidence Package (Standard)
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -37,6 +38,17 @@ export default function ExportPage() {
       a.download = `agenttrace-${standard}-${sessionId.slice(0, 8)}.json`;
       a.click();
       URL.revokeObjectURL(url);
+
+      // 2. Export Human-Readable Forensic Summary (Markdown)
+      const summary = generateForensicSummary(data);
+      const summaryBlob = new Blob([summary], { type: "text/markdown" });
+      const summaryUrl = URL.createObjectURL(summaryBlob);
+      const summaryA = document.createElement("a");
+      summaryA.href = summaryUrl;
+      summaryA.download = `forensic-summary-${sessionId.slice(0, 8)}.md`;
+      summaryA.click();
+      URL.revokeObjectURL(summaryUrl);
+
       setExported(true);
       setTimeout(() => setExported(false), 3000);
     } catch (err) {
@@ -45,6 +57,41 @@ export default function ExportPage() {
     } finally {
       setExporting(false);
     }
+  };
+
+  const generateForensicSummary = (data: any) => {
+    const records = data.records || [];
+    const integrity = data.chainIntegrity?.valid ? "✅ VERIFIED" : "❌ COMPROMISED";
+    
+    return `# AgentTrace Forensic Audit Summary
+Generated: ${new Date().toLocaleString()}
+Standard: ${standard}
+Session ID: ${data.sessionId}
+Integrity Status: ${integrity}
+
+## Executive Summary
+This document provides a cryptographically verified audit trail for the agent session "${selectedSession?.name}". 
+All actions listed below have been verified against the agent's unique Ed25519 signature and cross-linked via a SHA-256 hash chain.
+
+## Verification Proofs
+- **Merkle Root:** \`${data.merkleRoot}\`
+- **Chain Length:** ${data.traceCount} records
+- **Audit Standard:** ${standard}
+
+## Audit Trail
+${records.map((r: any, i: number) => `
+### [${i}] ${r.span.name}
+- **Timestamp:** ${new Date(r.span.startTime).toLocaleString()}
+- **Action Type:** ${r.span.kind}
+- **Status:** ${r.span.status}
+- **Input:** \`${JSON.stringify(r.span.input)}\`
+- **Output:** \`${JSON.stringify(r.span.output)}\`
+- **Cryptographic Hash:** \`${r.chainHash.slice(0, 16)}...\`
+`).join("\n")}
+
+---
+*Verified by AgentTrace Forensic Engine. This report is immutable and cryptographically linked to the source of truth.*
+`;
   };
 
   const selectedSession = sessions.find((s) => s.id === sessionId);

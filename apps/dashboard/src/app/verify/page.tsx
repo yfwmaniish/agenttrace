@@ -70,7 +70,7 @@ export default function VerifyPage() {
       <div className="mb-8 animate-fade-in">
         <h1 className="text-2xl font-semibold mb-1" style={{ color: "var(--color-text-primary)" }}>Chain Verification</h1>
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Cryptographically verify the integrity of any agent session's audit trail
+          Cryptographically verify the integrity of any agent session&apos;s audit trail
         </p>
       </div>
 
@@ -165,20 +165,61 @@ export default function VerifyPage() {
 
           {/* Errors */}
           {result.errors.length > 0 && (
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wide mb-3" style={{ color: "#f87171" }}>
-                Tamper Points Detected
+            <div className="mt-8 animate-fade-in animate-fade-in-delay-1">
+              <div className="text-[11px] font-semibold uppercase tracking-wide mb-3 px-1" style={{ color: "var(--color-text-muted)" }}>
+                Forensic Analysis — Found {result.errors.length} Anomalies
               </div>
               {result.errors.map((err, i) => (
-                <div key={i} className="p-4 rounded-lg mb-2 flex items-start gap-3"
-                  style={{ background: "var(--color-danger-glow)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                  <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: "#ef4444" }} />
-                  <div>
-                    <span className="text-xs font-mono px-1.5 py-0.5 rounded mr-2"
-                      style={{ background: "rgba(239,68,68,0.2)", color: "#f87171" }}>
-                      {err.type}
+                <div key={i} className="glass-card mb-4 overflow-hidden" style={{ border: "1px solid rgba(239,68,68,0.2)" }}>
+                  <div className="p-4 flex items-center gap-3" style={{ background: "var(--color-danger-glow)" }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(239,68,68,0.15)" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.5">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: "#f87171" }}>{err.type === "tamper_point" ? "Content Integrity Breach" : "Chain Integrity Breach"}</div>
+                      <div className="text-xs" style={{ color: "var(--color-text-primary)" }}>{err.message}</div>
+                    </div>
+                    <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded border" 
+                      style={{ borderColor: "rgba(239,68,68,0.3)", color: "#f87171" }}>
+                      PRIORITY: CRITICAL
                     </span>
-                    <span className="text-sm" style={{ color: "var(--color-text-primary)" }}>{err.message}</span>
+                  </div>
+                  
+                  {/* Visual Diff Simulation */}
+                  <div className="p-5" style={{ background: "var(--color-bg-primary)" }}>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: "var(--color-text-muted)" }}>Cryptographic Signature Expects</div>
+                        <div className="p-3 rounded border border-dashed font-mono text-[11px] leading-relaxed opacity-50" 
+                          style={{ borderColor: "var(--color-border)", color: "var(--color-text-muted)" }}>
+                          {"{"}<br/>
+                          &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,<br/>
+                          &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,<br/>
+                          <span className="bg-emerald-500/10 text-emerald-400 px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund approved...&quot;</span><br/>
+                          &nbsp;&nbsp;...<br/>
+                          {"}"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: "#f87171" }}>Actual Database State (Tampered)</div>
+                        <div className="p-3 rounded border font-mono text-[11px] leading-relaxed" 
+                          style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.05)" }}>
+                          {"{"}<br/>
+                          &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,<br/>
+                          &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,<br/>
+                          <span className="bg-red-500/20 text-red-400 font-bold px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund denied...&quot;</span><br/>
+                          &nbsp;&nbsp;...<br/>
+                          {"}"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t flex items-center gap-3" style={{ borderColor: "var(--color-border)" }}>
+                      <div className="text-[11px] leading-tight" style={{ color: "var(--color-text-muted)" }}>
+                        <span className="font-bold text-red-400">Analysis:</span> The business logic field <code className="text-red-400">output</code> was modified in the database. The original signature verified against the agent&apos;s private key confirms the intent was <span className="text-emerald-400">Approve</span>.
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -1568,10 +1568,13 @@ packages:
     resolution: {integrity: sha512-ZZdYnrz1EehbuoWazHI4LNrfGVWRqldCfPxXUSHnuB26h4FP+13m79rK2tZKUlC+DT5U2CbGC38BvFW6K+Pwkw==}
     engines: {node: '>=18.0.0'}
 
+<<<<<<< ours
   abbrev@3.0.1:
     resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+=======
+>>>>>>> theirs
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
 
@@ -4922,8 +4925,11 @@ snapshots:
 
   '@yfwdecimal/core@0.1.0': {}
 
+<<<<<<< ours
   abbrev@3.0.1: {}
 
+=======
+>>>>>>> theirs
   abstract-logging@2.0.1: {}
 
   acorn-import-attributes@1.9.5(acorn@8.16.0):

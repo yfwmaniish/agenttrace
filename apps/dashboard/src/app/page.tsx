@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< ours
 import { useState, useEffect } from "react";
 import { api, type SessionSummary, type TraceRecordDTO, type VerifyResult } from "@/lib/api";
 
@@ -105,6 +106,34 @@ export default function OverviewPage() {
     );
   }
 
+=======
+// --- Demo data for hackathon presentation ---
+const DEMO_STATS = {
+  totalTraces: 1847,
+  chainIntegrity: 99.7,
+  activeSessions: 12,
+  merkleRoots: 23,
+  lastVerified: "2 min ago",
+};
+
+const DEMO_SESSIONS = [
+  { id: "sess-a1b2c3", name: "GPT-4 Research Agent", status: "verified", traces: 342, started: "2 hours ago", agent: "research-agent-v2" },
+  { id: "sess-d4e5f6", name: "Code Review Agent", status: "verified", traces: 128, started: "45 min ago", agent: "code-reviewer-v1" },
+  { id: "sess-g7h8i9", name: "Customer Support Bot", status: "tampered", traces: 89, started: "3 hours ago", agent: "support-agent-v3" },
+  { id: "sess-j0k1l2", name: "Data Analysis Pipeline", status: "verified", traces: 567, started: "1 hour ago", agent: "analytics-v2" },
+  { id: "sess-m3n4o5", name: "Trading Signal Agent", status: "pending", traces: 43, started: "15 min ago", agent: "trading-v1" },
+];
+
+const DEMO_CHAIN = [
+  { seq: 0, hash: "a7f3e2d1c4b5", prevHash: "0000000000", kind: "agent_step", name: "Initialize Context", sig: "3d4e5f6a7b8c", time: "14:23:01" },
+  { seq: 1, hash: "b8e4f3c2d5a6", prevHash: "a7f3e2d1c4b5", kind: "llm_call", name: "GPT-4 Inference", sig: "9e0f1a2b3c4d", time: "14:23:02" },
+  { seq: 2, hash: "c9d5e4f3a6b7", prevHash: "b8e4f3c2d5a6", kind: "tool_invoke", name: "Web Search", sig: "5f6a7b8c9d0e", time: "14:23:04" },
+  { seq: 3, hash: "d0e6f5a4b7c8", prevHash: "c9d5e4f3a6b7", kind: "llm_call", name: "Synthesize Results", sig: "1a2b3c4d5e6f", time: "14:23:06" },
+  { seq: 4, hash: "e1f7a6b5c8d9", prevHash: "d0e6f5a4b7c8", kind: "decision", name: "Final Decision", sig: "7b8c9d0e1f2a", time: "14:23:08" },
+];
+
+export default function OverviewPage() {
+>>>>>>> theirs
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
       {/* Header */}
