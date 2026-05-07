@@ -1,15 +1,14 @@
-# agenttrace (Python)
+# AgentTrace (Python SDK)
 
-Cryptographic forensic audit SDK for AI agents — Ed25519 signing, SHA-256 hash chains, tamper detection.
+Cryptographic forensic audit SDK for AI agents — Ed25519 signing, SHA-256 hash chains, and real-time tamper detection.
 
 ## Features
 
-- **Ed25519 Signatures** — Every trace record is cryptographically signed
-- **SHA-256 Hash Chains** — Tamper-proof linked records
-- **Context Manager API** — Pythonic `with` syntax for tracing
-- **Async HTTP Transport** — Non-blocking trace delivery via `httpx`
-- **LangChain Compatible** — Optional adapter for LangChain agents
-- **Cross-Language Parity** — Identical crypto output as the TypeScript SDK
+- **Ed25519 Signatures** — Every trace record is cryptographically signed locally (non-repudiation).
+- **SHA-256 Hash Chains** — Immutable linked records detect any deletion or reordering.
+- **Context Manager API** — Pythonic `with` syntax for effortless tracing.
+- **LangChain "Drop-in" Integration** — One-line forensic enablement for LangChain agents.
+- **Cross-Language Parity** — Identical cryptographic primitives as the TypeScript SDK.
 
 ## Install
 
@@ -20,53 +19,42 @@ pip install agenttrace
 ## Quick Start
 
 ```python
-from agenttrace import AgentTraceClient
+from agenttrace.client import AgentTraceClient
 
+# 1. Initialize the Forensic Client
 client = AgentTraceClient(
-    endpoint="http://localhost:4000",
-    agent_id="research-agent-v2"
+    endpoint="https://api-puce-zeta.vercel.app/api", 
+    api_key="at_...",
+    project_id="AI Research Lab"
 )
 
-# Context manager auto-signs and chains
+# 2. Pythonic context manager auto-signs and hash-chains
 with client.trace("GPT-4 Inference", kind="llm_call") as span:
     span.set_input({"model": "gpt-4", "prompt": "Analyze quarterly earnings"})
-    result = call_llm(...)
-    span.set_output({"tokens": 342, "response": result})
+    # result = call_llm(...)
+    span.set_output({"tokens": 342, "response": "Bullish trend detected."})
 
-# Explicit flush
-await client.flush()
+# 3. Flush signatures to the AgentTrace Cloud
+client.flush_sync()
 ```
 
-## Standalone Crypto
+## LangChain Integration (The Wedge)
+
+Enable forensics for any LangChain agent by simply adding our callback handler.
 
 ```python
-from agenttrace.crypto import generate_keypair, sign_message, verify_signature
-import hashlib
+from agenttrace.langchain import AgentTraceCallbackHandler
 
-# Generate Ed25519 keypair
-private_key, public_key = generate_keypair()
+# 1. Setup the handler
+trace_handler = AgentTraceCallbackHandler(client)
 
-# Sign data
-message = b"critical agent decision"
-signature = sign_message(private_key, message)
+# 2. Add to any agent run
+agent_executor.run(
+    "Perform a market analysis on NVIDIA.", 
+    callbacks=[trace_handler]
+)
 
-# Verify
-is_valid = verify_signature(public_key, message, signature)
-assert is_valid
-```
-
-## LangChain Integration
-
-```bash
-pip install agenttrace[langchain]
-```
-
-```python
-from agenttrace.adapters.langchain import AgentTraceCallbackHandler
-
-handler = AgentTraceCallbackHandler(client)
-agent = AgentExecutor(callbacks=[handler])
-# All LLM calls auto-traced with forensic signatures
+# All LLM calls and tool invocations are now cryptographically signed.
 ```
 
 ## Cryptographic Standards
@@ -77,6 +65,13 @@ agent = AgentExecutor(callbacks=[handler])
 | Digital signatures | Ed25519 (RFC 8032) |
 | Chain integrity | Hash(content ‖ previous_hash) |
 
-## License
+## Forensic Verification
+You can verify any session by its ID using the AgentTrace Dashboard or the CLI:
 
+```bash
+# Verify a session locally
+npx @agenttrace/cli verify <session-id>
+```
+
+## License
 MIT
