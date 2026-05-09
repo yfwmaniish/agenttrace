@@ -1,6 +1,5 @@
 "use client";
 
-<<<<<<< ours
 import { useState, useEffect } from "react";
 import { api, type SessionSummary, type TraceRecordDTO, type VerifyResult } from "@/lib/api";
 
@@ -22,7 +21,6 @@ interface ChainBlock {
 }
 
 export default function OverviewPage() {
-  const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [chain, setChain] = useState<ChainBlock[]>([]);
@@ -30,11 +28,7 @@ export default function OverviewPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
-    loadData();
-  }, []);
-
-  async function loadData() {
+    async function loadData() {
     try {
       const { sessions: sessionList } = await api.getSessions();
       setSessions(sessionList);
@@ -85,20 +79,22 @@ export default function OverviewPage() {
     }
   }
 
-  if (!mounted) return null;
+  loadData();
+  }, []);
 
   if (loading) {
     return (
-      <div className="p-8 max-w-[1400px] mx-auto">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--color-text-primary)" }}>Forensic Overview</h1>
-          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading live data from API...</p>
+      <div className="p-12 max-w-[1600px] mx-auto min-h-screen bg-white">
+        <div className="mb-12 border-b-4 border-black pb-4">
+          <h1 className="text-[6rem] leading-none font-black tracking-tighter uppercase text-black">
+            <span className="text-[#FF3000] mr-4">01.</span>OVERVIEW
+          </h1>
         </div>
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-4 gap-6 mb-12">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="glass-card p-5 animate-pulse" style={{ minHeight: "100px" }}>
-              <div className="h-4 rounded" style={{ background: "var(--color-border)", width: "60%" }} />
-              <div className="h-8 rounded mt-3" style={{ background: "var(--color-border)", width: "40%" }} />
+            <div key={i} className="swiss-card p-6" style={{ minHeight: "160px" }}>
+              <div className="w-12 h-12 bg-[#F2F2F2] border-2 border-black animate-pulse mb-6" />
+              <div className="h-6 bg-[#F2F2F2] border-2 border-black w-3/4 animate-pulse" />
             </div>
           ))}
         </div>
@@ -106,92 +102,68 @@ export default function OverviewPage() {
     );
   }
 
-=======
-// --- Demo data for hackathon presentation ---
-const DEMO_STATS = {
-  totalTraces: 1847,
-  chainIntegrity: 99.7,
-  activeSessions: 12,
-  merkleRoots: 23,
-  lastVerified: "2 min ago",
-};
-
-const DEMO_SESSIONS = [
-  { id: "sess-a1b2c3", name: "GPT-4 Research Agent", status: "verified", traces: 342, started: "2 hours ago", agent: "research-agent-v2" },
-  { id: "sess-d4e5f6", name: "Code Review Agent", status: "verified", traces: 128, started: "45 min ago", agent: "code-reviewer-v1" },
-  { id: "sess-g7h8i9", name: "Customer Support Bot", status: "tampered", traces: 89, started: "3 hours ago", agent: "support-agent-v3" },
-  { id: "sess-j0k1l2", name: "Data Analysis Pipeline", status: "verified", traces: 567, started: "1 hour ago", agent: "analytics-v2" },
-  { id: "sess-m3n4o5", name: "Trading Signal Agent", status: "pending", traces: 43, started: "15 min ago", agent: "trading-v1" },
-];
-
-const DEMO_CHAIN = [
-  { seq: 0, hash: "a7f3e2d1c4b5", prevHash: "0000000000", kind: "agent_step", name: "Initialize Context", sig: "3d4e5f6a7b8c", time: "14:23:01" },
-  { seq: 1, hash: "b8e4f3c2d5a6", prevHash: "a7f3e2d1c4b5", kind: "llm_call", name: "GPT-4 Inference", sig: "9e0f1a2b3c4d", time: "14:23:02" },
-  { seq: 2, hash: "c9d5e4f3a6b7", prevHash: "b8e4f3c2d5a6", kind: "tool_invoke", name: "Web Search", sig: "5f6a7b8c9d0e", time: "14:23:04" },
-  { seq: 3, hash: "d0e6f5a4b7c8", prevHash: "c9d5e4f3a6b7", kind: "llm_call", name: "Synthesize Results", sig: "1a2b3c4d5e6f", time: "14:23:06" },
-  { seq: 4, hash: "e1f7a6b5c8d9", prevHash: "d0e6f5a4b7c8", kind: "decision", name: "Final Decision", sig: "7b8c9d0e1f2a", time: "14:23:08" },
-];
-
-export default function OverviewPage() {
->>>>>>> theirs
   return (
-    <div className="p-8 max-w-[1400px] mx-auto">
+    <div className="p-8 md:p-12 lg:p-16 max-w-[1800px] mx-auto min-h-screen">
       {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--color-text-primary)" }}>
-            Forensic Overview
-          </h1>
-          <span className="badge-verified flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-glow" />
-            Live Data
-          </span>
+      <div className="mb-12 border-b-4 border-black pb-4 flex justify-between items-end">
+        <h1 className="text-5xl md:text-[6rem] leading-none font-black tracking-tighter uppercase text-black">
+          <span className="text-[#FF3000] mr-4 md:mr-6">01.</span>OVERVIEW
+        </h1>
+        <div className="hidden md:flex items-center gap-4 bg-black text-white px-6 py-3 font-mono text-sm uppercase font-bold tracking-widest border-4 border-black shadow-[4px_4px_0px_0px_#FF3000]">
+          <span className="w-3 h-3 bg-[#FF3000] border border-black animate-pulse" />
+          SYSTEM LIVE
         </div>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Cryptographic audit trail for all AI agent decisions • ISO 42001 compliant
-        </p>
       </div>
 
       {/* Stats Grid */}
       {stats && (
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <StatCard label="Total Traces" value={stats.totalTraces.toLocaleString()} icon="📊" accent="emerald" delay={1} />
-          <StatCard label="Chain Integrity" value={`${stats.chainIntegrity}%`} icon="🛡️" accent="emerald" delay={2} />
-          <StatCard label="Active Sessions" value={stats.activeSessions.toString()} icon="⚡" accent="blue" delay={3} />
-          <StatCard label="Merkle Roots" value={stats.merkleRoots.toString()} icon="🌳" accent="emerald" delay={4} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <StatCard label="Total Traces" value={stats.totalTraces.toLocaleString()} accent="black" delay={1} />
+          <StatCard label="Chain Integrity" value={`${stats.chainIntegrity}%`} accent={stats.chainIntegrity === 100 ? "black" : "red"} delay={2} />
+          <StatCard label="Active Sessions" value={stats.activeSessions.toString()} accent="black" delay={3} />
+          <StatCard label="Merkle Roots" value={stats.merkleRoots.toString()} accent="black" delay={4} />
         </div>
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-5 gap-6">
-        {/* Chain Visualization — wider */}
-        <div className="col-span-3 glass-card p-6 animate-fade-in animate-fade-in-delay-2">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-semibold tracking-wide uppercase" style={{ color: "var(--color-text-secondary)" }}>
-              Hash Chain Visualization
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        {/* Chain Visualization */}
+        <div className="xl:col-span-7 bg-white border-4 border-black p-0 flex flex-col relative group">
+          <div className="border-b-4 border-black p-4 bg-[#F2F2F2] flex justify-between items-center group-hover:bg-[#FF3000] group-hover:text-white transition-colors duration-100">
+            <h2 className="text-xl font-bold uppercase tracking-widest">
+              <span className="text-[#FF3000] group-hover:text-black mr-2">A.</span>HASH CHAIN
             </h2>
             {sessions[0] && (
-              <span className="hash-display">Session: {sessions[0].name || sessions[0].id.slice(0, 12)}</span>
+              <span className="font-mono text-xs font-bold uppercase bg-white text-black px-2 py-1 border-2 border-black">
+                ID: {sessions[0].name || sessions[0].id.slice(0, 12)}
+              </span>
             )}
           </div>
-          <ChainVisualization chain={chain} />
+          <div className="p-6 md:p-10 flex-1 relative swiss-dots">
+            <ChainVisualization chain={chain} />
+          </div>
         </div>
 
         {/* Recent Sessions */}
-        <div className="col-span-2 glass-card p-6 animate-fade-in animate-fade-in-delay-3">
-          <h2 className="text-sm font-semibold tracking-wide uppercase mb-5" style={{ color: "var(--color-text-secondary)" }}>
-            Recent Sessions
-          </h2>
-          <div className="flex flex-col gap-3">
+        <div className="xl:col-span-5 bg-white border-4 border-black flex flex-col relative group">
+          <div className="border-b-4 border-black p-4 bg-[#F2F2F2] group-hover:bg-black group-hover:text-white transition-colors duration-100">
+            <h2 className="text-xl font-bold uppercase tracking-widest">
+              <span className="text-[#FF3000] mr-2">B.</span>SESSIONS
+            </h2>
+          </div>
+          <div className="flex flex-col flex-1 divide-y-4 divide-black">
             {sessions.map((session) => (
               <SessionRow key={session.id} session={session} verified={verifyResults[session.id]} />
             ))}
+            {sessions.length === 0 && (
+              <div className="p-6 font-mono text-sm uppercase font-bold text-[#555]">No sessions active</div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Bottom row — Compliance + Activity */}
-      <div className="grid grid-cols-2 gap-6 mt-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         <ComplianceWidget />
         <ActivityFeed sessions={sessions} verifyResults={verifyResults} />
       </div>
@@ -199,69 +171,53 @@ export default function OverviewPage() {
   );
 }
 
-function StatCard({ label, value, icon, accent, delay }: { label: string; value: string; icon: string; accent: string; delay: number }) {
-  const isEmerald = accent === "emerald";
+function StatCard({ label, value, accent }: { label: string; value: string; accent: string; delay?: number }) {
+  const isRed = accent === "red";
   return (
-    <div className={`glass-card p-5 animate-fade-in animate-fade-in-delay-${delay}`}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-lg">{icon}</span>
-        <span className="w-2 h-2 rounded-full pulse-glow" style={{ background: isEmerald ? "#10b981" : "#3b82f6" }} />
+    <div className={`swiss-card p-6 md:p-8 flex flex-col justify-between group hover:bg-black hover:text-white hover:border-black cursor-pointer transition-colors duration-100 relative overflow-hidden`}>
+      <div className={`absolute top-0 right-0 w-16 h-16 border-l-4 border-b-4 border-black bg-white group-hover:bg-[#FF3000] transition-colors duration-100 flex items-center justify-center`}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="text-black group-hover:-rotate-45 transition-transform duration-100">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
       </div>
-      <div className="text-2xl font-bold mb-1" style={{ color: "var(--color-text-primary)" }}>{value}</div>
-      <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>{label}</div>
+      <div className={`text-6xl md:text-7xl font-black tracking-tighter mb-4 ${isRed ? "text-[#FF3000]" : "text-black"} group-hover:text-white`}>
+        {value}
+      </div>
+      <div className="text-sm font-bold uppercase tracking-widest text-[#555] group-hover:text-[#AAA]">
+        {label}
+      </div>
     </div>
   );
 }
 
 function ChainVisualization({ chain }: { chain: ChainBlock[] }) {
-  const kindColors: Record<string, string> = {
-    agent_step: "#3b82f6",
-    llm_call: "#10b981",
-    tool_invoke: "#f59e0b",
-    decision: "#8b5cf6",
-  };
-
   if (chain.length === 0) {
-    return <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>No chain data available</p>;
+    return <div className="font-mono text-sm font-bold uppercase border-4 border-black p-4 inline-block bg-white shadow-[4px_4px_0px_0px_#FF3000]">No chain data</div>;
   }
 
   return (
-    <div className="flex flex-col gap-0">
-      {chain.map((block, i) => (
-        <div key={block.seq} className="flex items-start gap-4" style={{ animationDelay: `${i * 0.1}s` }}>
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold border"
-              style={{
-                background: `${kindColors[block.kind] || "#6b7280"}15`,
-                borderColor: `${kindColors[block.kind] || "#6b7280"}40`,
-                color: kindColors[block.kind] || "#6b7280",
-              }}>
-              #{block.seq}
-            </div>
-            {i < chain.length - 1 && (
-              <div className="w-0.5 h-8" style={{ background: `linear-gradient(to bottom, ${kindColors[block.kind] || "#6b7280"}60, transparent)` }} />
-            )}
+    <div className="flex flex-col relative z-10 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      {chain.map((block) => (
+        <div key={block.seq} className="flex border-b-4 border-black last:border-b-0 hover:bg-[#F2F2F2] transition-colors duration-100">
+          <div className="w-16 md:w-24 border-r-4 border-black flex flex-col items-center justify-center p-4 bg-black text-white">
+            <span className="font-mono text-xl font-black">{block.seq}</span>
           </div>
-          <div className="flex-1 pb-4">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>{block.name}</span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-medium" style={{
-                background: `${kindColors[block.kind] || "#6b7280"}15`,
-                color: kindColors[block.kind] || "#6b7280",
-              }}>
-                {block.kind}
+          <div className="flex-1 p-4 md:p-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+              <span className="text-xl font-bold uppercase tracking-tight">{block.name}</span>
+              <span className="px-2 py-1 border-2 border-black bg-white text-xs font-bold uppercase tracking-widest whitespace-nowrap">
+                {block.kind.replace('_', ' ')}
               </span>
-              <span className="text-[10px] ml-auto" style={{ color: "var(--color-text-muted)" }}>{block.time}</span>
+              <span className="font-mono text-xs font-bold md:ml-auto bg-black text-white px-2 py-1">
+                {block.time}
+              </span>
             </div>
-            <div className="flex items-center gap-3 hash-display">
-              <span style={{ color: "var(--color-text-accent)" }}>
-                ◆ {block.hash}...
-              </span>
-              <span>←</span>
-              <span>{block.prevHash}...</span>
-              <span className="ml-auto" style={{ color: "var(--color-accent-dim)" }}>
-                σ {block.sig}
-              </span>
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4 font-mono text-xs uppercase font-bold mt-4 border-t-2 border-dashed border-black pt-4">
+              <span className="text-black bg-[#F2F2F2] px-2 py-1 border border-black">HASH: {block.hash}</span>
+              <span className="hidden md:inline">→</span>
+              <span className="text-[#555]">PREV: {block.prevHash}</span>
+              <span className="md:ml-auto text-[#FF3000]">SIG: {block.sig}</span>
             </div>
           </div>
         </div>
@@ -271,50 +227,58 @@ function ChainVisualization({ chain }: { chain: ChainBlock[] }) {
 }
 
 function SessionRow({ session, verified }: { session: SessionSummary; verified?: VerifyResult }) {
-  const status = verified ? (verified.valid ? "verified" : "tampered") : "pending";
-  const statusBadge = status === "verified" ? "badge-verified"
-    : status === "tampered" ? "badge-tampered" : "badge-pending";
-
+  const isValid = verified?.valid;
+  const isPending = !verified;
+  
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200"
-      style={{ background: "rgba(255,255,255,0.02)" }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}>
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-        style={{ background: "var(--color-accent-glow)", color: "var(--color-accent)" }}>
+    <div className="flex items-center p-4 md:p-6 bg-white hover:bg-black hover:text-white cursor-pointer transition-colors duration-100 group">
+      <div className="w-12 h-12 border-4 border-black bg-[#F2F2F2] flex items-center justify-center text-xl font-black uppercase mr-4 group-hover:bg-[#FF3000] group-hover:border-white transition-colors duration-100">
         {(session.name || "?")[0]}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium truncate" style={{ color: "var(--color-text-primary)" }}>{session.name || session.id}</div>
-        <div className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{session._count.records} traces</div>
+      <div className="flex-1 min-w-0 mr-4">
+        <div className="text-lg font-bold uppercase tracking-tight truncate">{session.name || session.id}</div>
+        <div className="font-mono text-xs font-bold text-[#555] group-hover:text-[#AAA] uppercase mt-1">
+          {session._count.records} traces
+        </div>
       </div>
-      <span className={statusBadge}>{status}</span>
+      <div className={`font-mono text-xs font-bold uppercase border-2 p-2 whitespace-nowrap
+        ${isPending ? "border-black bg-[#F2F2F2] text-black group-hover:bg-white" : 
+          isValid ? "border-black bg-black text-white group-hover:bg-white group-hover:text-black" : 
+          "border-[#FF3000] bg-[#FF3000] text-white"}`}>
+        {isPending ? "Pending" : isValid ? "Verified" : "Tampered"}
+      </div>
     </div>
   );
 }
 
 function ComplianceWidget() {
   const standards = [
-    { name: "ISO 42001", section: "A.6.2.8", status: "compliant", desc: "AI decision audit trail" },
-    { name: "ISO 27001", section: "A.8.15", status: "compliant", desc: "Event logging" },
-    { name: "NIST AI RMF", section: "MG-3.2", status: "compliant", desc: "Risk measurement" },
-    { name: "EU AI Act", section: "Art. 12", status: "partial", desc: "Record-keeping" },
+    { name: "ISO 42001", section: "A.6.2.8", status: "compliant", desc: "Audit trail" },
+    { name: "ISO 27001", section: "A.8.15", status: "compliant", desc: "Logging" },
+    { name: "NIST RMF", section: "MG-3.2", status: "compliant", desc: "Metrics" },
+    { name: "EU AI Act", section: "Art. 12", status: "partial", desc: "Records" },
   ];
 
   return (
-    <div className="glass-card p-6 animate-fade-in animate-fade-in-delay-4">
-      <h2 className="text-sm font-semibold tracking-wide uppercase mb-4" style={{ color: "var(--color-text-secondary)" }}>
-        Compliance Status
-      </h2>
-      <div className="flex flex-col gap-3">
+    <div className="bg-white border-4 border-black flex flex-col group hover:bg-[#F2F2F2] transition-colors duration-100">
+      <div className="border-b-4 border-black p-4 bg-black text-white">
+        <h2 className="text-xl font-bold uppercase tracking-widest">
+          <span className="text-[#FF3000] mr-2">C.</span>COMPLIANCE
+        </h2>
+      </div>
+      <div className="flex flex-col divide-y-2 divide-black">
         {standards.map((s) => (
-          <div key={s.name} className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full" style={{
-              background: s.status === "compliant" ? "#10b981" : "#f59e0b",
-            }} />
-            <span className="text-sm font-medium w-24" style={{ color: "var(--color-text-primary)" }}>{s.name}</span>
-            <span className="hash-display flex-1">{s.section} — {s.desc}</span>
-            <span className={s.status === "compliant" ? "badge-verified" : "badge-pending"}>
+          <div key={s.name} className="flex items-center p-4">
+            <div className={`w-4 h-4 border-2 border-black mr-4 ${s.status === "compliant" ? "bg-black" : "bg-white"}`} />
+            <span className="text-lg font-bold uppercase w-32">{s.name}</span>
+            <span className="font-mono text-xs font-bold uppercase bg-white border-2 border-black px-2 py-1 mr-4 hidden md:block">
+              {s.section}
+            </span>
+            <span className="font-mono text-xs uppercase font-bold text-[#555] flex-1 truncate">
+              {s.desc}
+            </span>
+            <span className={`font-mono text-xs font-bold uppercase border-2 p-2 ml-4
+              ${s.status === "compliant" ? "border-black bg-black text-white" : "border-black bg-white text-black"}`}>
               {s.status}
             </span>
           </div>
@@ -330,38 +294,41 @@ function ActivityFeed({ sessions, verifyResults }: { sessions: SessionSummary[];
     if (v && !v.valid) {
       return {
         time: new Date(s.startedAt).toLocaleTimeString("en-US", { hour12: false }),
-        event: "Tamper detected",
-        detail: `Session ${s.name || s.id.slice(0, 12)} • ${s._count.records} records • Chain BROKEN`,
+        event: "TAMPER DETECTED",
+        detail: `ID: ${s.id.slice(0, 8)} | BROKEN CHAIN`,
         type: "danger",
       };
     }
     return {
       time: new Date(s.startedAt).toLocaleTimeString("en-US", { hour12: false }),
-      event: v?.valid ? "Chain verified" : "Session recorded",
-      detail: `Session ${s.name || s.id.slice(0, 12)} • ${s._count.records} records${v?.valid ? " • Integrity: PASS" : ""}`,
+      event: v?.valid ? "VERIFIED" : "RECORDED",
+      detail: `ID: ${s.id.slice(0, 8)} | ${s._count.records} SIGS`,
       type: v?.valid ? "success" : "info",
     };
   });
 
-  const typeColors: Record<string, string> = { success: "#10b981", danger: "#ef4444", info: "#3b82f6" };
-
   return (
-    <div className="glass-card p-6 animate-fade-in animate-fade-in-delay-4">
-      <h2 className="text-sm font-semibold tracking-wide uppercase mb-4" style={{ color: "var(--color-text-secondary)" }}>
-        Live Activity
-      </h2>
-      <div className="flex flex-col gap-3">
+    <div className="bg-white border-4 border-black flex flex-col group hover:bg-black hover:text-white transition-colors duration-100">
+      <div className="border-b-4 border-black p-4 bg-[#FF3000] text-white">
+        <h2 className="text-xl font-bold uppercase tracking-widest">
+          <span className="text-black mr-2">D.</span>ACTIVITY LOG
+        </h2>
+      </div>
+      <div className="flex flex-col p-6 gap-4 font-mono text-sm uppercase font-bold">
         {activities.map((a, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <span className="hash-display mt-0.5 w-14 shrink-0">{a.time}</span>
-            <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: typeColors[a.type] }} />
-            <div>
-              <div className="text-sm font-medium" style={{ color: typeColors[a.type] }}>{a.event}</div>
-              <div className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{a.detail}</div>
-            </div>
+          <div key={i} className="flex flex-col md:flex-row md:items-center gap-2 border-l-4 border-black pl-4 py-1 group-hover:border-[#FF3000]">
+            <span className="w-24 shrink-0 text-[#555] group-hover:text-[#AAA]">{a.time}</span>
+            <span className={`px-2 py-1 border-2 ${a.type === "danger" ? "bg-[#FF3000] border-[#FF3000] text-white" : "bg-white border-black text-black group-hover:text-black"}`}>
+              {a.event}
+            </span>
+            <span className="md:ml-auto">{a.detail}</span>
           </div>
         ))}
+        {activities.length === 0 && (
+          <div className="text-[#555]">NO RECENT ACTIVITY</div>
+        )}
       </div>
     </div>
   );
 }
+

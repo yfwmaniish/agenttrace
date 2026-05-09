@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap", weight: ["400", "500", "700", "900"] });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
 
 export const metadata: Metadata = {
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
       </head>
-      <body className="antialiased">
+      <body className="antialiased swiss-noise bg-white text-black min-h-screen">
         <div className="flex h-screen overflow-hidden">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto relative swiss-grid-pattern">
             {children}
           </main>
         </div>
@@ -36,27 +36,24 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="w-[72px] h-screen flex flex-col items-center py-6 border-r"
-      style={{ background: "var(--color-bg-secondary)", borderColor: "var(--color-border)" }}>
+    <aside className="w-[88px] h-screen flex flex-col items-center py-8 border-r-4 border-black bg-white z-50 relative">
       {/* Logo */}
-      <div className="mb-8 flex items-center justify-center w-10 h-10 rounded-lg"
-        style={{ background: "var(--color-accent-glow)", border: "1px solid rgba(16,185,129,0.3)" }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round">
+      <div className="mb-12 flex items-center justify-center w-14 h-14 border-4 border-black bg-white group transition-all duration-100 hover:bg-black cursor-pointer" title="AgentTrace">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" className="text-black group-hover:text-white transition-colors">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           <polyline points="9 12 11 14 15 10" />
         </svg>
       </div>
 
       {/* Nav Icons */}
-      <nav className="flex flex-col gap-2 flex-1">
+      <nav className="flex flex-col gap-6 flex-1 w-full px-4">
         {navItems.map((item) => (
           <a key={item.label} href={item.href}
-            className="group relative w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 hover:scale-110"
-            style={{ color: "var(--color-text-muted)" }}
+            className="group relative w-full aspect-square flex items-center justify-center border-2 border-transparent hover:border-black hover:bg-black transition-all duration-100 text-black hover:text-white"
             title={item.label}>
             <item.icon />
-            <span className="absolute left-14 px-2 py-1 rounded text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
-              style={{ background: "var(--color-bg-card)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
+            {/* Tooltip */}
+            <span className="absolute left-[70px] px-3 py-1 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none bg-black text-white border-2 border-black z-50 shadow-[4px_4px_0px_0px_#FF3000]">
               {item.label}
             </span>
           </a>
@@ -64,8 +61,7 @@ function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold"
-        style={{ background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff" }}>
+      <div className="w-14 h-14 flex items-center justify-center text-lg font-black tracking-tighter border-4 border-black bg-[#FF3000] text-white">
         AT
       </div>
     </aside>
@@ -74,16 +70,16 @@ function Sidebar() {
 
 function GridIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
+      <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
     </svg>
   );
 }
 
 function LayersIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
       <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
     </svg>
   );
@@ -91,7 +87,7 @@ function LayersIcon() {
 
 function ShieldIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   );
@@ -99,8 +95,8 @@ function ShieldIcon() {
 
 function FileIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
+      <path d="M14 2H6v20h12V8z" /><polyline points="14 2 14 8 20 8" />
       <line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
     </svg>
   );

@@ -10,29 +10,29 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function loadSessions() {
+      try {
+        const { sessions: list } = await api.getSessions();
+        setSessions(list);
+
+        const results: Record<string, VerifyResult> = {};
+        for (const s of list) {
+          try {
+            results[s.id] = await api.verify(s.id);
+          } catch {
+            results[s.id] = { valid: false, chainLength: 0 };
+          }
+        }
+        setVerifyResults(results);
+      } catch (err) {
+        console.error("Failed to load sessions:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     loadSessions();
   }, []);
-
-  async function loadSessions() {
-    try {
-      const { sessions: list } = await api.getSessions();
-      setSessions(list);
-
-      const results: Record<string, VerifyResult> = {};
-      for (const s of list) {
-        try {
-          results[s.id] = await api.verify(s.id);
-        } catch {
-          results[s.id] = { valid: false, chainLength: 0 };
-        }
-      }
-      setVerifyResults(results);
-    } catch (err) {
-      console.error("Failed to load sessions:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function getStatus(s: SessionSummary): string {
     const v = verifyResults[s.id];
@@ -50,12 +50,15 @@ export default function SessionsPage() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-[1400px] mx-auto">
-        <h1 className="text-2xl font-semibold mb-4" style={{ color: "var(--color-text-primary)" }}>Sessions</h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading sessions from API...</p>
-        <div className="glass-card mt-6 p-8 animate-pulse" style={{ minHeight: "300px" }}>
+      <div className="p-12 max-w-[1600px] mx-auto min-h-screen bg-white">
+        <div className="mb-12 border-b-4 border-black pb-4">
+          <h1 className="text-[6rem] leading-none font-black tracking-tighter uppercase text-black">
+            <span className="text-[#FF3000] mr-4">02.</span>SESSIONS
+          </h1>
+        </div>
+        <div className="border-4 border-black p-8 animate-pulse bg-white min-h-[400px]">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-12 rounded mb-3" style={{ background: "var(--color-border)", opacity: 1 - i * 0.2 }} />
+            <div key={i} className="h-16 bg-[#F2F2F2] border-b-4 border-black mb-4" />
           ))}
         </div>
       </div>
@@ -65,98 +68,122 @@ export default function SessionsPage() {
   const totalTraces = sessions.reduce((a, s) => a + s._count.records, 0);
 
   return (
-    <div className="p-8 max-w-[1400px] mx-auto">
-      <div className="flex items-center justify-between mb-8 animate-fade-in">
+    <div className="p-8 md:p-12 lg:p-16 max-w-[1800px] mx-auto min-h-screen">
+      {/* Header */}
+      <div className="mb-12 border-b-4 border-black pb-4 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
         <div>
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--color-text-primary)" }}>Sessions</h1>
-          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-            {sessions.length} agent sessions tracked • {totalTraces.toLocaleString()} total traces
+          <h1 className="text-5xl md:text-[6rem] leading-none font-black tracking-tighter uppercase text-black">
+            <span className="text-[#FF3000] mr-4 md:mr-6">02.</span>SESSIONS
+          </h1>
+          <p className="font-mono text-sm uppercase font-bold text-[#555] mt-4 tracking-widest">
+            {sessions.length} AGENT SESSIONS TRACKED • {totalTraces.toLocaleString()} TOTAL TRACES
           </p>
         </div>
-        <div className="flex gap-2">
+        
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2">
           {["all", "verified", "tampered", "pending"].map((f) => (
             <button key={f} onClick={() => setFilter(f)}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 capitalize"
-              style={{
-                background: filter === f ? "var(--color-accent-glow)" : "transparent",
-                color: filter === f ? "var(--color-accent)" : "var(--color-text-muted)",
-                border: `1px solid ${filter === f ? "rgba(16,185,129,0.3)" : "var(--color-border)"}`,
-              }}>
+              className={`px-4 py-2 text-sm font-bold uppercase tracking-widest border-2 transition-all duration-100
+                ${filter === f 
+                  ? f === "tampered" ? "bg-[#FF3000] border-[#FF3000] text-white" : "bg-black border-black text-white" 
+                  : "bg-white border-black text-black hover:bg-[#F2F2F2]"}`}
+            >
               {f}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="glass-card overflow-hidden animate-fade-in animate-fade-in-delay-1">
-        <table className="w-full">
+      <div className="bg-white border-4 border-black overflow-hidden relative shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
-              <th className="text-left text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Session</th>
-              <th className="text-left text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Agent</th>
-              <th className="text-center text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Traces</th>
-              <th className="text-center text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Integrity</th>
-              <th className="text-center text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Status</th>
-              <th className="text-right text-[11px] font-semibold uppercase tracking-wider px-6 py-4" style={{ color: "var(--color-text-muted)" }}>Merkle Root</th>
+            <tr className="bg-black text-white">
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black w-2/5">Session</th>
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black border-l-2">Agent</th>
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black border-l-2 text-center">Traces</th>
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black border-l-2 text-center">Integrity</th>
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black border-l-2 text-center">Status</th>
+              <th className="text-sm font-bold uppercase tracking-widest px-6 py-4 border-b-4 border-black border-l-2 text-right">Merkle Root</th>
             </tr>
           </thead>
-          <tbody>
-            {filtered.map((session, i) => {
+          <tbody className="divide-y-2 divide-black">
+            {filtered.map((session) => {
               const status = getStatus(session);
               const integrity = getIntegrity(session);
               const v = verifyResults[session.id];
               const agent = (session.metadata as Record<string, string>)?.agent || "unknown";
               const merkleRoot = v?.merkleRoot || null;
+              
+              const isTampered = status === "tampered";
+              const isVerified = status === "verified";
 
               return (
                 <tr key={session.id}
-                  className="cursor-pointer transition-all duration-200"
-                  style={{
-                    borderBottom: "1px solid var(--color-border-subtle)",
-                    animationDelay: `${i * 0.05}s`,
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(16,185,129,0.03)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>{session.name || "Unnamed"}</div>
-                    <div className="hash-display">{session.id.slice(0, 16)}...</div>
+                  className="cursor-pointer transition-colors duration-100 bg-white hover:bg-black hover:text-white group"
+                >
+                  <td className="px-6 py-4 border-r-2 border-black group-hover:border-white">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 flex items-center justify-center text-xl font-black uppercase border-2 
+                        ${isTampered ? "bg-[#FF3000] border-[#FF3000] text-white" : "bg-[#F2F2F2] border-black text-black group-hover:bg-white"}`}>
+                        {(session.name || "?")[0]}
+                      </div>
+                      <div>
+                        <div className="text-lg font-bold uppercase tracking-tight">{session.name || "Unnamed"}</div>
+                        <div className="font-mono text-xs text-[#555] group-hover:text-[#AAA]">ID: {session.id.slice(0, 16)}...</div>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-xs px-2 py-1 rounded" style={{ background: "var(--color-bg-primary)", color: "var(--color-text-secondary)" }}>
+                  <td className="px-6 py-4 border-r-2 border-black group-hover:border-white">
+                    <span className="font-mono text-xs font-bold uppercase border-2 border-black px-2 py-1 bg-white text-black">
                       {agent}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+                  <td className="px-6 py-4 border-r-2 border-black group-hover:border-white text-center text-lg font-bold">
                     {session._count.records}
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-6 py-4 border-r-2 border-black group-hover:border-white text-center">
                     {integrity !== null ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--color-bg-primary)" }}>
-                          <div className="h-full rounded-full transition-all duration-500" style={{
-                            width: `${integrity}%`,
-                            background: integrity === 100 ? "#10b981" : integrity > 90 ? "#f59e0b" : "#ef4444",
-                          }} />
-                        </div>
-                        <span className="text-xs font-mono" style={{ color: integrity === 100 ? "#10b981" : "#ef4444" }}>
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <span className={`font-mono text-lg font-black ${integrity === 100 ? "text-black group-hover:text-white" : "text-[#FF3000]"}`}>
                           {integrity}%
                         </span>
+                        <div className="w-24 h-2 border-2 border-black bg-white">
+                          <div className={`h-full ${integrity === 100 ? "bg-black" : "bg-[#FF3000]"}`} style={{ width: `${integrity}%` }} />
+                        </div>
                       </div>
                     ) : (
-                      <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>—</span>
+                      <span className="font-mono text-[#555] group-hover:text-[#AAA]">N/A</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={status === "verified" ? "badge-verified" : status === "tampered" ? "badge-tampered" : "badge-pending"}>
+                  <td className="px-6 py-4 border-r-2 border-black group-hover:border-white text-center">
+                    <span className={`font-mono text-xs font-bold uppercase border-2 px-3 py-1 whitespace-nowrap
+                      ${status === "pending" ? "border-black bg-[#F2F2F2] text-black group-hover:bg-white" : 
+                        isVerified ? "border-black bg-black text-white group-hover:bg-white group-hover:text-black" : 
+                        "border-[#FF3000] bg-[#FF3000] text-white"}`}>
                       {status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right hash-display">
-                    {merkleRoot ? `${merkleRoot.slice(0, 16)}...` : "—"}
+                  <td className="px-6 py-4 text-right">
+                    {merkleRoot ? (
+                      <span className="font-mono text-xs font-bold uppercase bg-[#F2F2F2] text-black border border-black px-2 py-1 group-hover:bg-white">
+                        {merkleRoot.slice(0, 16)}...
+                      </span>
+                    ) : (
+                      <span className="font-mono text-[#555] group-hover:text-[#AAA]">NONE</span>
+                    )}
                   </td>
                 </tr>
               );
             })}
+            
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center font-mono text-lg font-bold uppercase text-[#555]">
+                  No sessions match current filter
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

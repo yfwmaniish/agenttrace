@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { api, type SessionSummary, type VerifyResult, type TamperResult } from "@/lib/api";
+import { api, type SessionSummary } from "@/lib/api";
 
 export default function VerifyPage() {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
@@ -66,52 +66,51 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className="p-8 max-w-[1000px] mx-auto">
-      <div className="mb-8 animate-fade-in">
-        <h1 className="text-2xl font-semibold mb-1" style={{ color: "var(--color-text-primary)" }}>Chain Verification</h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Cryptographically verify the integrity of any agent session&apos;s audit trail
+    <div className="p-8 md:p-12 lg:p-16 max-w-[1200px] mx-auto min-h-screen">
+      <div className="mb-12 border-b-4 border-black pb-4">
+        <h1 className="text-5xl md:text-[6rem] leading-none font-black tracking-tighter uppercase text-black">
+          <span className="text-[#FF3000] mr-4 md:mr-6">03.</span>VERIFY
+        </h1>
+        <p className="font-mono text-sm uppercase font-bold text-[#555] mt-4 tracking-widest">
+          CRYPTOGRAPHICALLY VERIFY THE INTEGRITY OF ANY AGENT SESSION&apos;S AUDIT TRAIL
         </p>
       </div>
 
       {/* Input */}
-      <div className="glass-card p-6 mb-6 animate-fade-in animate-fade-in-delay-1">
-        <label className="text-xs font-semibold uppercase tracking-wide block mb-3" style={{ color: "var(--color-text-muted)" }}>
-          Session ID
+      <div className="bg-white border-4 border-black p-6 md:p-8 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative z-10">
+        <label className="text-xl font-bold uppercase tracking-widest block mb-4 border-l-8 border-[#FF3000] pl-4">
+          TARGET SESSION ID
         </label>
-        <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row gap-4">
           <select value={sessionId} onChange={(e) => setSessionId(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg text-sm font-mono outline-none transition-all duration-200"
+            className="flex-1 px-4 py-4 text-lg font-mono font-bold uppercase border-4 border-black outline-none bg-[#F2F2F2] focus:bg-white transition-colors duration-100 cursor-pointer appearance-none rounded-none"
             style={{
-              background: "var(--color-bg-primary)",
-              border: "1px solid var(--color-border)",
-              color: "var(--color-text-primary)",
+              backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22square%22%20stroke-linejoin%3D%22miter%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 1rem top 50%",
+              backgroundSize: "1.5rem auto"
             }}>
             {sessions.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.name || "Unnamed"} — {s.id.slice(0, 16)}... ({s._count.records} records)
+                {s.name || "UNNAMED"} — {s.id.slice(0, 16)}... ({s._count.records} RECORDS)
               </option>
             ))}
           </select>
           <button onClick={runVerification} disabled={verifying || !sessionId}
-            className="px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2"
-            style={{
-              background: verifying ? "var(--color-accent-dim)" : "var(--color-accent)",
-              color: "#fff",
-              opacity: verifying ? 0.7 : 1,
-            }}>
+            className={`px-8 py-4 text-xl font-black uppercase tracking-widest border-4 border-black transition-all duration-100 flex items-center justify-center gap-4
+              ${verifying ? "bg-[#F2F2F2] text-[#555] cursor-not-allowed" : "bg-[#FF3000] text-white hover:bg-black hover:text-white"}`}>
             {verifying ? (
               <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Verifying...
+                <span className="w-6 h-6 border-4 border-black border-t-transparent animate-spin" />
+                VERIFYING
               </>
             ) : (
               <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <polyline points="9 12 11 14 15 10" />
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
-                Verify Chain
+                EXECUTE
               </>
             )}
           </button>
@@ -120,109 +119,116 @@ export default function VerifyPage() {
 
       {/* Result */}
       {result && (
-        <div className={`glass-card p-6 animate-fade-in ${result.valid ? "glow-green" : "glow-red"}`}>
+        <div className={`border-4 border-black relative ${result.valid ? "bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" : "bg-[#FF3000] text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"}`}>
           {/* Status Banner */}
-          <div className="flex items-center gap-4 mb-6 pb-6" style={{ borderBottom: "1px solid var(--color-border)" }}>
-            <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{
-              background: result.valid ? "var(--color-accent-glow)" : "var(--color-danger-glow)",
-            }}>
+          <div className="flex flex-col md:flex-row items-start md:items-center p-6 md:p-8 border-b-4 border-black bg-black text-white">
+            <div className={`w-16 h-16 flex items-center justify-center border-4 mr-6 shrink-0
+              ${result.valid ? "border-white bg-black" : "border-white bg-[#FF3000]"}`}>
               {result.valid ? (
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               ) : (
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               )}
             </div>
-            <div>
-              <h2 className="text-xl font-bold" style={{ color: result.valid ? "#34d399" : "#f87171" }}>
-                {result.valid ? "Chain Integrity VERIFIED" : "TAMPERING DETECTED"}
+            <div className="flex-1 mt-4 md:mt-0">
+              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-2">
+                {result.valid ? "INTEGRITY VERIFIED" : "TAMPERING DETECTED"}
               </h2>
-              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-                {result.chainLength} records verified in {result.duration}
+              <p className="font-mono text-sm uppercase font-bold tracking-widest text-[#AAA]">
+                {result.chainLength} RECORDS SCANNED IN {result.duration}
               </p>
             </div>
-            <span className={`ml-auto ${result.valid ? "badge-verified" : "badge-tampered"}`}>
+            <div className={`mt-6 md:mt-0 px-6 py-3 border-4 font-black text-2xl uppercase tracking-widest
+              ${result.valid ? "border-white bg-white text-black" : "border-white bg-[#FF3000] text-white"}`}>
               {result.valid ? "PASS" : "FAIL"}
-            </span>
+            </div>
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <DetailRow label="Chain Length" value={`${result.chainLength} records`} />
-            <DetailRow label="Verification Time" value={result.duration} />
-            <DetailRow label="Verified At" value={new Date(result.verifiedAt).toLocaleString()} />
-            <DetailRow label="Errors Found" value={result.errors.length.toString()} color={result.errors.length > 0 ? "#ef4444" : "#10b981"} />
+          <div className={`grid grid-cols-2 lg:grid-cols-4 divide-y-4 lg:divide-y-0 lg:divide-x-4 border-b-4 divide-black border-black
+            ${result.valid ? "bg-[#F2F2F2]" : "bg-[#CC2600]"}`}>
+            <DetailRow label="CHAIN LENGTH" value={`${result.chainLength} BLOCKS`} />
+            <DetailRow label="EXECUTION TIME" value={result.duration} />
+            <DetailRow label="TIMESTAMP" value={new Date(result.verifiedAt).toLocaleTimeString("en-US", { hour12: false })} />
+            <DetailRow label="ANOMALIES" value={result.errors.length.toString()} isError={result.errors.length > 0} />
           </div>
 
           {/* Merkle Root */}
-          <div className="p-4 rounded-lg mb-4" style={{ background: "var(--color-bg-primary)" }}>
-            <div className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--color-text-muted)" }}>Merkle Root</div>
-            <div className="font-mono text-xs break-all" style={{ color: "var(--color-text-accent)" }}>{result.merkleRoot}</div>
+          <div className={`p-6 md:p-8 ${result.valid ? "bg-white" : "bg-[#FF3000]"}`}>
+            <div className="text-sm font-bold uppercase tracking-widest mb-2 border-l-4 border-black pl-2">MERKLE ROOT HASH</div>
+            <div className={`p-4 font-mono text-lg font-bold break-all border-4 border-black
+              ${result.valid ? "bg-black text-white" : "bg-white text-black"}`}>
+              {result.merkleRoot}
+            </div>
           </div>
 
           {/* Errors */}
           {result.errors.length > 0 && (
-            <div className="mt-8 animate-fade-in animate-fade-in-delay-1">
-              <div className="text-[11px] font-semibold uppercase tracking-wide mb-3 px-1" style={{ color: "var(--color-text-muted)" }}>
-                Forensic Analysis — Found {result.errors.length} Anomalies
+            <div className="border-t-4 border-black bg-white text-black">
+              <div className="p-4 bg-black text-white text-xl font-black uppercase tracking-widest">
+                FORENSIC REPORT: {result.errors.length} ANOMALIES FOUND
               </div>
-              {result.errors.map((err, i) => (
-                <div key={i} className="glass-card mb-4 overflow-hidden" style={{ border: "1px solid rgba(239,68,68,0.2)" }}>
-                  <div className="p-4 flex items-center gap-3" style={{ background: "var(--color-danger-glow)" }}>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(239,68,68,0.15)" }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.5">
+              
+              <div className="divide-y-4 divide-black">
+                {result.errors.map((err, i) => (
+                  <div key={i} className="flex flex-col">
+                    <div className="p-4 bg-[#FF3000] text-white border-b-4 border-black flex items-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="mr-4">
                         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
                       </svg>
+                      <span className="font-bold uppercase tracking-widest flex-1">
+                        {err.type === "tamper_point" ? "CONTENT MUTATION DETECTED" : "CHAIN LINKAGE BROKEN"}
+                      </span>
+                      <span className="font-mono text-xs font-bold bg-white text-black px-2 py-1 border-2 border-black">
+                        PRIORITY: CRITICAL
+                      </span>
                     </div>
-                    <div>
-                      <div className="text-sm font-bold" style={{ color: "#f87171" }}>{err.type === "tamper_point" ? "Content Integrity Breach" : "Chain Integrity Breach"}</div>
-                      <div className="text-xs" style={{ color: "var(--color-text-primary)" }}>{err.message}</div>
-                    </div>
-                    <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded border" 
-                      style={{ borderColor: "rgba(239,68,68,0.3)", color: "#f87171" }}>
-                      PRIORITY: CRITICAL
-                    </span>
-                  </div>
-                  
-                  {/* Visual Diff Simulation */}
-                  <div className="p-5" style={{ background: "var(--color-bg-primary)" }}>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <div className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: "var(--color-text-muted)" }}>Cryptographic Signature Expects</div>
-                        <div className="p-3 rounded border border-dashed font-mono text-[11px] leading-relaxed opacity-50" 
-                          style={{ borderColor: "var(--color-border)", color: "var(--color-text-muted)" }}>
-                          {"{"}<br/>
-                          &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,<br/>
-                          &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,<br/>
-                          <span className="bg-emerald-500/10 text-emerald-400 px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund approved...&quot;</span><br/>
-                          &nbsp;&nbsp;...<br/>
-                          {"}"}
+                    <div className="p-6 md:p-8 font-mono text-sm font-bold uppercase">
+                      <div className="mb-6">{err.message}</div>
+                      
+                      {/* Visual Diff Simulation - Brutalist version */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-4 border-black">
+                        <div className="border-b-4 lg:border-b-0 lg:border-r-4 border-black flex flex-col">
+                          <div className="bg-[#F2F2F2] border-b-4 border-black p-2 text-center">EXPECTED SIGNATURE</div>
+                          <div className="p-4 bg-white whitespace-pre font-mono text-xs text-[#555] overflow-x-auto">
+                            {"{"}\n
+                            &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,\n
+                            &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,\n
+                            <span className="bg-black text-white px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund approved...&quot;</span>\n
+                            &nbsp;&nbsp;...\n
+                            {"}"}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="bg-black text-white border-b-4 border-black p-2 text-center">ACTUAL STATE (TAMPERED)</div>
+                          <div className="p-4 bg-white whitespace-pre font-mono text-xs text-black overflow-x-auto relative">
+                            <div className="absolute top-0 right-0 p-2 text-[#FF3000]">
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="opacity-20">
+                                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                              </svg>
+                            </div>
+                            {"{"}\n
+                            &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,\n
+                            &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,\n
+                            <span className="bg-[#FF3000] text-white px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund denied...&quot;</span>\n
+                            &nbsp;&nbsp;...\n
+                            {"}"}
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <div className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: "#f87171" }}>Actual Database State (Tampered)</div>
-                        <div className="p-3 rounded border font-mono text-[11px] leading-relaxed" 
-                          style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.05)" }}>
-                          {"{"}<br/>
-                          &nbsp;&nbsp;&quot;spanId&quot;: &quot;...&quot;,<br/>
-                          &nbsp;&nbsp;&quot;name&quot;: &quot;Escalation Decision&quot;,<br/>
-                          <span className="bg-red-500/20 text-red-400 font-bold px-1">&nbsp;&nbsp;&quot;output&quot;: &quot;Refund denied...&quot;</span><br/>
-                          &nbsp;&nbsp;...<br/>
-                          {"}"}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t flex items-center gap-3" style={{ borderColor: "var(--color-border)" }}>
-                      <div className="text-[11px] leading-tight" style={{ color: "var(--color-text-muted)" }}>
-                        <span className="font-bold text-red-400">Analysis:</span> The business logic field <code className="text-red-400">output</code> was modified in the database. The original signature verified against the agent&apos;s private key confirms the intent was <span className="text-emerald-400">Approve</span>.
+                      
+                      <div className="mt-6 p-4 border-4 border-black bg-[#F2F2F2]">
+                        <span className="text-[#FF3000] mr-2">ANALYSIS:</span> 
+                        BUSINESS LOGIC FIELD &apos;OUTPUT&apos; MUTATED. ORIGINAL SIGNATURE VERIFIED AGAINST AGENT&apos;S PRIVATE KEY CONFIRMS INTENT WAS &apos;APPROVE&apos;.
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -231,11 +237,13 @@ export default function VerifyPage() {
   );
 }
 
-function DetailRow({ label, value, color }: { label: string; value: string; color?: string }) {
+function DetailRow({ label, value, isError }: { label: string; value: string; isError?: boolean }) {
   return (
-    <div className="p-3 rounded-lg" style={{ background: "var(--color-bg-primary)" }}>
-      <div className="text-[11px] uppercase tracking-wide mb-1" style={{ color: "var(--color-text-muted)" }}>{label}</div>
-      <div className="text-sm font-medium" style={{ color: color || "var(--color-text-primary)" }}>{value}</div>
+    <div className="p-4 md:p-6 flex flex-col justify-center">
+      <div className="text-xs font-bold uppercase tracking-widest mb-2 opacity-80">{label}</div>
+      <div className={`text-2xl font-black uppercase tracking-tight ${isError ? "text-white bg-black px-2 self-start" : ""}`}>
+        {value}
+      </div>
     </div>
   );
 }
